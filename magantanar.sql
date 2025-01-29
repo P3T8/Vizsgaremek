@@ -44,26 +44,24 @@ CREATE TABLE `tantargyak` (
   `oradij` int
 );
 
-
 ALTER TABLE `uzenetek` ADD FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`);
-
 ALTER TABLE `uzenetek` ADD FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
-
 ALTER TABLE `diak` ADD FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`);
+ALTER TABLE `diak` ADD FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
+ALTER TABLE `tantargyak` ADD FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
 
-
-
-INSERT INTO diak (diak_id, d_nev, email, jelszo, tanar_id, tantargy_id) 
-VALUES (1, 'Kiss Anna', 'anna.kiss@example.com', 'jelszo123', NULL, 1);
-
-INSERT INTO tanar (tanar_id, t_nev, iranyitoszam, varos, utca, hazszam, email, jelszo, telefonszam, dijszabas, bemutatkozas, bszamla, adoszam, IBAN) 
-VALUES (1, 'Nagy Péter', '1011', 'Budapest', 'Fő utca', '1', 'peter.nagy@example.com', 'tanar123', '+36123456789', '5000 Ft/óra', 'Tapasztalt matematika tanár.', 12345678, '12345678-1-42', 'HU12345678901234567890123456');
-
-INSERT INTO uzenetek (uzenetek_id, datum, diak_id, tanar_id, szoveg) 
-VALUES (1, '2025-01-21', 1, 1, 'Érdekelne a matematika oktatás!');
-
+-- Előbb a tantárgyakat kell felvenni
 INSERT INTO tantargyak (tantargy_id, tantargy_nev, tanar_id, oradij) 
 VALUES (1, 'Matematika', 1, 5000);
 
-     
+-- Ezután a tanárokat
+INSERT INTO tanar (tanar_id, t_nev, iranyitoszam, varos, utca, hazszam, email, jelszo, telefonszam, dijszabas, bemutatkozas, bszamla, adoszam, IBAN, tantargy_id) 
+VALUES (1, 'Nagy Péter', '1011', 'Budapest', 'Fő utca', '1', 'peter.nagy@example.com', 'tanar123', '+36123456789', '5000 Ft/óra', 'Tapasztalt matematika tanár.', 12345678, '12345678-1-42', 'HU12345678901234567890123456', 1);
 
+-- Majd a diákokat
+INSERT INTO diak (diak_id, d_nev, email, jelszo, tanar_id, tantargy_id) 
+VALUES (1, 'Kiss Anna', 'anna.kiss@example.com', 'jelszo123', 1, 1);
+
+-- Végül az üzeneteket
+INSERT INTO uzenetek (uzenetek_id, datum, diak_id, tanar_id, szoveg) 
+VALUES (1, '2025-01-21', 1, 1, 'Érdekelne a matematika oktatás!');
