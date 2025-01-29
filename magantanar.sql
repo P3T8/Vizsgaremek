@@ -1,279 +1,69 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2025. Jan 29. 08:03
--- Kiszolgáló verziója: 10.4.28-MariaDB
--- PHP verzió: 8.2.4
-
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2025. Jan 29. 08:03
--- Kiszolgáló verziója: 10.4.28-MariaDB
--- PHP verzió: 8.2.4
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Adatbázis: `magantanar`
---
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `diak`
---
+DROP DATABASE IF EXISTS magantanar;
+CREATE DATABASE magantanar;
+USE magantanar;
 
 CREATE TABLE `diak` (
-  `diak_id` int(11) NOT NULL,
-  `d_nev` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `jelszo` varchar(255) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `tantargy_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `tanar`
---
+  `diak_id` integer PRIMARY KEY,
+  `d_nev` varchar(255),
+  `email` varchar(255),
+  `jelszo` varchar(255),
+  `tanar_id` int,
+  `tantargy_id` int
+);
 
 CREATE TABLE `tanar` (
-  `tanar_id` int(11) NOT NULL,
-  `t_nev` varchar(255) DEFAULT NULL,
-  `iranyitoszam` varchar(10) DEFAULT NULL,
-  `varos` varchar(255) DEFAULT NULL,
-  `utca` varchar(255) DEFAULT NULL,
-  `hazszam` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `jelszo` varchar(255) DEFAULT NULL,
-  `telefonszam` varchar(30) DEFAULT NULL,
-  `dijszabas` varchar(255) DEFAULT NULL,
-  `bemutatkozas` text DEFAULT NULL,
-  `bszamla` int(11) DEFAULT NULL,
-  `adoszam` varchar(255) DEFAULT NULL,
-  `IBAN` varchar(255) DEFAULT NULL,
-  `tantargy_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `tantargyak`
---
-
-CREATE TABLE `tantargyak` (
-  `tantargy_id` int(11) NOT NULL,
-  `tantargy_nev` varchar(255) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `oradij` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `uzenetek`
---
+  `tanar_id` integer PRIMARY KEY,
+  `t_nev` varchar(255),
+  `iranyitoszam` varchar(10),
+  `varos` varchar(255),
+  `utca` varchar(255),
+  `hazszam` varchar(255),
+  `email` varchar(255),
+  `jelszo` varchar(255),
+  `telefonszam` varchar(30),
+  `dijszabas` varchar(255),
+  `bemutatkozas` text,
+  `bszamla` integer,
+  `adoszam` varchar(255),
+  `IBAN` varchar(255),
+  `tantargy_id` int
+);
 
 CREATE TABLE `uzenetek` (
-  `uzenetek_id` int(11) NOT NULL,
-  `datum` date DEFAULT NULL,
-  `diak_id` int(11) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `szoveg` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Indexek a kiírt táblákhoz
---
-
---
--- A tábla indexei `diak`
---
-ALTER TABLE `diak`
-  ADD PRIMARY KEY (`diak_id`),
-  ADD KEY `tantargy_id` (`tantargy_id`);
-
---
--- A tábla indexei `tanar`
---
-ALTER TABLE `tanar`
-  ADD PRIMARY KEY (`tanar_id`);
-
---
--- A tábla indexei `tantargyak`
---
-ALTER TABLE `tantargyak`
-  ADD PRIMARY KEY (`tantargy_id`);
-
---
--- A tábla indexei `uzenetek`
---
-ALTER TABLE `uzenetek`
-  ADD PRIMARY KEY (`uzenetek_id`),
-  ADD KEY `diak_id` (`diak_id`),
-  ADD KEY `tanar_id` (`tanar_id`);
-
---
--- Megkötések a kiírt táblákhoz
---
-
---
--- Megkötések a táblához `diak`
---
-ALTER TABLE `diak`
-  ADD CONSTRAINT `diak_ibfk_1` FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`);
-
---
--- Megkötések a táblához `uzenetek`
---
-ALTER TABLE `uzenetek`
-  ADD CONSTRAINT `uzenetek_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
-  ADD CONSTRAINT `uzenetek_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Adatbázis: `magantanar`
---
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `diak`
---
-
-CREATE TABLE `diak` (
-  `diak_id` int(11) NOT NULL,
-  `d_nev` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `jelszo` varchar(255) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `tantargy_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `tanar`
---
-
-CREATE TABLE `tanar` (
-  `tanar_id` int(11) NOT NULL,
-  `t_nev` varchar(255) DEFAULT NULL,
-  `iranyitoszam` varchar(10) DEFAULT NULL,
-  `varos` varchar(255) DEFAULT NULL,
-  `utca` varchar(255) DEFAULT NULL,
-  `hazszam` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `jelszo` varchar(255) DEFAULT NULL,
-  `telefonszam` varchar(30) DEFAULT NULL,
-  `dijszabas` varchar(255) DEFAULT NULL,
-  `bemutatkozas` text DEFAULT NULL,
-  `bszamla` int(11) DEFAULT NULL,
-  `adoszam` varchar(255) DEFAULT NULL,
-  `IBAN` varchar(255) DEFAULT NULL,
-  `tantargy_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `tantargyak`
---
+  `uzenetek_id` integer PRIMARY KEY,
+  `datum` date,
+  `diak_id` integer,
+  `tanar_id` integer,
+  `szoveg` text
+);
 
 CREATE TABLE `tantargyak` (
-  `tantargy_id` int(11) NOT NULL,
-  `tantargy_nev` varchar(255) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `oradij` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `tantargy_id` integer PRIMARY KEY,
+  `tantargy_nev` varchar(255),
+  `tanar_id` integer,
+  `oradij` int
+);
 
--- --------------------------------------------------------
 
---
--- Tábla szerkezet ehhez a táblához `uzenetek`
---
+ALTER TABLE `uzenetek` ADD FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`);
 
-CREATE TABLE `uzenetek` (
-  `uzenetek_id` int(11) NOT NULL,
-  `datum` date DEFAULT NULL,
-  `diak_id` int(11) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
-  `szoveg` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+ALTER TABLE `uzenetek` ADD FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
 
---
--- Indexek a kiírt táblákhoz
---
+ALTER TABLE `diak` ADD FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`);
 
---
--- A tábla indexei `diak`
---
-ALTER TABLE `diak`
-  ADD PRIMARY KEY (`diak_id`),
-  ADD KEY `tantargy_id` (`tantargy_id`);
 
---
--- A tábla indexei `tanar`
---
-ALTER TABLE `tanar`
-  ADD PRIMARY KEY (`tanar_id`);
 
---
--- A tábla indexei `tantargyak`
---
-ALTER TABLE `tantargyak`
-  ADD PRIMARY KEY (`tantargy_id`);
+INSERT INTO diak (diak_id, d_nev, email, jelszo, tanar_id, tantargy_id) 
+VALUES (1, 'Kiss Anna', 'anna.kiss@example.com', 'jelszo123', NULL, 1);
 
---
--- A tábla indexei `uzenetek`
---
-ALTER TABLE `uzenetek`
-  ADD PRIMARY KEY (`uzenetek_id`),
-  ADD KEY `diak_id` (`diak_id`),
-  ADD KEY `tanar_id` (`tanar_id`);
+INSERT INTO tanar (tanar_id, t_nev, iranyitoszam, varos, utca, hazszam, email, jelszo, telefonszam, dijszabas, bemutatkozas, bszamla, adoszam, IBAN) 
+VALUES (1, 'Nagy Péter', '1011', 'Budapest', 'Fő utca', '1', 'peter.nagy@example.com', 'tanar123', '+36123456789', '5000 Ft/óra', 'Tapasztalt matematika tanár.', 12345678, '12345678-1-42', 'HU12345678901234567890123456');
 
---
--- Megkötések a kiírt táblákhoz
---
+INSERT INTO uzenetek (uzenetek_id, datum, diak_id, tanar_id, szoveg) 
+VALUES (1, '2025-01-21', 1, 1, 'Érdekelne a matematika oktatás!');
 
---
--- Megkötések a táblához `diak`
---
-ALTER TABLE `diak`
-  ADD CONSTRAINT `diak_ibfk_1` FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`);
+INSERT INTO tantargyak (tantargy_id, tantargy_nev, tanar_id, oradij) 
+VALUES (1, 'Matematika', 1, 5000);
 
---
--- Megkötések a táblához `uzenetek`
---
-ALTER TABLE `uzenetek`
-  ADD CONSTRAINT `uzenetek_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
-  ADD CONSTRAINT `uzenetek_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
-COMMIT;
+     
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
