@@ -59,3 +59,20 @@ Ez a dokumentáció egy olyan magántanár kereső weboldal felépítését és 
 
 ## 6. Biztonsági Megfontolások
 - Jelszavak titkosítása (bcrypt), SQL injekció elleni védelem, GDPR-megfelelőség.
+
+végpontok:
+Főoldal: www.localhost:3300/magantanar
+Tanár: www.localhost:3300/magantanar/tanar
+Diák: www.localhost:3300/magantanar/diak
+Regisztráció: www.localhost:3300/magantanar/regisztracio
+Bejelentkezés: www.localhost:3300/magantanar/bejelentkezes
+Kereső: www.localhost:3300/magantanar/tanar/kereso
+	www.localhost:3300/magantanar/tanar/kereso/tantargy
+	www.localhost:3300/magantanar/tanar/kereso/tantargy/?=id
+	www.localhost:3300/magantanar/tanar/kereso/mod/?=id
+	www.localhost:3300/magantanar/tanar/kereso/varos/?=id
+	www.localhost:3300/magantanar/tanar/kereso/nem
+Órarend: www.localhost:3300/magantanar/orarend	
+Időpontfoglalás: www.localhost:3300/magantanar/idopont
+Rólunk: www.localhost:3300/magantanar/rolunk
+Chat funkció: www.localhost:3300/magantanar/uzenet === ?
