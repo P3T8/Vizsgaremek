@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import db from './db.js'; // Ha van adatbázis kapcsolat
+import db from './db'; // Ha van adatbázis kapcsolat
 
 const app = express();
 app.use(express.json());
