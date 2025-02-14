@@ -45,6 +45,14 @@ CREATE TABLE `tanar` (
 
 INSERT INTO `tanar` (`tanar_id`, `t_nev`, `iranyitoszam`, `varos`, `utca`, `hazszam`, `email`, `jelszo`, `telefonszam`, `dijszabas`, `bemutatkozas`, `bszamla`, `adoszam`, `IBAN`, `tantargy_id`) VALUES
 (1, 'Nagy Péter', '1011', 'Budapest', 'Fő utca', '1', 'peter.nagy@example.com', 'tanar123', '+36123456789', '5000 ', 'Tapasztalt matematika tanár.', 12345678, '12345678-1-42', 'HU12345678901234567890123456', 1);
+(2, 'Kovács Gábor', '1023', 'Budapest', 'Margit körút', '12', 'gabor.kovacs@example.com', 'tanar234', '+36201234567', '6000', 'Fizika oktatás több mint 10 év tapasztalattal.', 22334455, '22334455-1-55', 'HU22334455667788990011223344', 2),
+(3, 'Szabó Dóra', '6000', 'Kecskemét', 'Petőfi utca', '5', 'dora.szabo@example.com', 'tanar345', '+36205556677', '4500', 'Angol nyelvoktatás kezdőknek és haladóknak.', 33445566, '33445566-1-66', 'HU33445566778899001122334455', 3),
+(4, 'Tóth László', '4025', 'Debrecen', 'Kossuth tér', '8', 'laszlo.toth@example.com', 'tanar456', '+36301234568', '5500', 'Történelem tanítás egyetemi szinten.', 44556677, '44556677-1-77', 'HU44556677889900112233445566', 4),
+(5, 'Németh Anna', '6720', 'Szeged', 'Dugonics tér', '10', 'anna.nemeth@example.com', 'tanar567', '+36203334455', '5000', 'Kémia oktatás középiskolai és egyetemi szinten.', 55667788, '55667788-1-88', 'HU55667788990011223344556677', 5),
+(6, 'Farkas Péter', '8000', 'Székesfehérvár', 'Rákóczi utca', '7', 'peter.farkas@example.com', 'tanar678', '+36204445566', '4000', 'Informatika és programozás oktatás.', 66778899, '66778899-1-99', 'HU66778899001122334455667788', 6),
+(7, 'Kiss Zoltán', '4032', 'Debrecen', 'Egyetem tér', '3', 'zoltan.kiss@example.com', 'tanar789', '+36301112233', '6500', 'Biológia tanítás érettségi felkészítéshez.', 77889900, '77889900-1-00', 'HU77889900112233445566778899', 7),
+(8, 'Molnár Mária', '7100', 'Szekszárd', 'Béke utca', '14', 'maria.molnar@example.com', 'tanar890', '+36206667788', '4800', 'Földrajz és környezetismeret oktatás.', 88990011, '88990011-1-11', 'HU88990011223344556677889900', 8),
+(9, 'Varga István', '9021', 'Győr', 'Széchenyi tér', '9', 'istvan.varga@example.com', 'tanar901', '+36207778899', '7000', 'Testnevelés és sportedzés tanítás.', 99001122, '99001122-1-22', 'HU99001122334455667788990011', 9);
 
 CREATE TABLE `tantargyak` (
   `tantargy_id` int(11) NOT NULL,
