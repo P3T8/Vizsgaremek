@@ -64,3 +64,5 @@ router.post('/magantanar/bejelentkezes', (req, res) => {
         res.json({ message: 'Sikeres bejelentkezés', tanar: results[0] });
     });
 });
+
+//Naptár(GChrome Naptár)

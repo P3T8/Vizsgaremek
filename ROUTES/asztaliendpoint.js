@@ -100,3 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
     container.appendChild(form);
     document.body.appendChild(container);
 });
+
+//Tanár törlése(1 év inaktivitás esetén)
+
+//Tantárgyak hozzáadása
+
