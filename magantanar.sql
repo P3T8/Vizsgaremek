@@ -19,7 +19,10 @@ SET time_zone = "+00:00";
 
 --
 -- Adatbázis: `magantanar`
---
+DROP DATABASE IF EXISTS magantanar;
+CREATE DATABASE magantanar;
+USE magantanar;
+
 
 -- --------------------------------------------------------
 
