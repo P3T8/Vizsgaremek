@@ -142,7 +142,7 @@ CREATE TABLE `uzenetek` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `esemeny` (
-  `uzenetek_id` int(11) NOT NULL,
+  `esemenyek_id` int(11) NOT NULL,
   `kezd` datetime,
   `veg` datetime,
   `diak_id` int(11) DEFAULT NULL,
@@ -222,8 +222,6 @@ ALTER TABLE `tantargyak`
 ALTER TABLE `uzenetek`
   ADD CONSTRAINT `uzenetek_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
   ADD CONSTRAINT `uzenetek_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
-COMMIT;
-
 
 ALTER TABLE `esemenyek`
   ADD CONSTRAINT `esemenyek_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
