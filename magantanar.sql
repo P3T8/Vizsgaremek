@@ -141,6 +141,14 @@ CREATE TABLE `uzenetek` (
   `szoveg` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `esemeny` (
+  `uzenetek_id` int(11) NOT NULL,
+  `kezd` datetime,
+  `veg` datetime,
+  `diak_id` int(11) DEFAULT NULL,
+  `tanar_id` int(11) DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- A tábla adatainak kiíratása `uzenetek`
 --
@@ -216,6 +224,11 @@ ALTER TABLE `uzenetek`
   ADD CONSTRAINT `uzenetek_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
 COMMIT;
 
+
+ALTER TABLE `esemenyek`
+  ADD CONSTRAINT `esemenyek_ibfk_1` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
+  ADD CONSTRAINT `esemenyek_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
+COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
