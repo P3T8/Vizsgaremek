@@ -71,12 +71,11 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
         const nev = document.getElementById("nev").value.trim();
         const email = document.getElementById("email").value.trim();
-        const nickname = document.getElementById("nickname").value.trim();
         const password = document.getElementById("password").value;
         const password2 = document.getElementById("password2").value;
         const check1 = document.getElementById("check1").checked;
 
-        if (!nev || !email || !nickname || !password || !password2) {
+        if (!nev || !email || !password || !password2) {
             alert("Minden mező kitöltése kötelező!");
             return;
         }
