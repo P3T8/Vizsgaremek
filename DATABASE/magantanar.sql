@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2025. Feb 18. 13:08
+-- Létrehozás ideje: 2025. Feb 20. 15:04
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
 
@@ -52,6 +52,21 @@ INSERT INTO `diak` (`diak_id`, `d_nev`, `email`, `jelszo`, `tanar_id`, `tantargy
 (9, 'Kovács Norbert', 'norbert.kovacs@example.com', 'jelszo131', 9, 9),
 (10, 'Nagy Zsófia', 'zsofia.nagy@example.com', 'jelszo132', 10, 10),
 (11, 'Péter Katalin', 'katalin.peter@example.com', 'jelszo133', 11, 11);
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `esemeny`
+--
+
+CREATE TABLE `esemeny` (
+  `esemenyek_id` int(11) NOT NULL,
+  `kezd` datetime DEFAULT NULL,
+  `veg` datetime DEFAULT NULL,
+  `diak_id` int(11) DEFAULT NULL,
+  `tanar_id` int(11) DEFAULT NULL,
+  `tantargy_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -168,6 +183,14 @@ ALTER TABLE `diak`
   ADD KEY `tanar_id` (`tanar_id`);
 
 --
+-- A tábla indexei `esemeny`
+--
+ALTER TABLE `esemeny`
+  ADD KEY `fv_esem_tanar` (`tanar_id`),
+  ADD KEY `fv_esem_tant` (`tantargy_id`),
+  ADD KEY `fv_esem_diak` (`diak_id`);
+
+--
 -- A tábla indexei `tanar`
 --
 ALTER TABLE `tanar`
@@ -189,6 +212,34 @@ ALTER TABLE `uzenetek`
   ADD KEY `tanar_id` (`tanar_id`);
 
 --
+-- A kiírt táblák AUTO_INCREMENT értéke
+--
+
+--
+-- AUTO_INCREMENT a táblához `diak`
+--
+ALTER TABLE `diak`
+  MODIFY `diak_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT a táblához `tanar`
+--
+ALTER TABLE `tanar`
+  MODIFY `tanar_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT a táblához `tantargyak`
+--
+ALTER TABLE `tantargyak`
+  MODIFY `tantargy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT a táblához `uzenetek`
+--
+ALTER TABLE `uzenetek`
+  MODIFY `uzenetek_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
 -- Megkötések a kiírt táblákhoz
 --
 
@@ -198,6 +249,14 @@ ALTER TABLE `uzenetek`
 ALTER TABLE `diak`
   ADD CONSTRAINT `diak_ibfk_1` FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`),
   ADD CONSTRAINT `diak_ibfk_2` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`);
+
+--
+-- Megkötések a táblához `esemeny`
+--
+ALTER TABLE `esemeny`
+  ADD CONSTRAINT `fv_esem_diak` FOREIGN KEY (`diak_id`) REFERENCES `diak` (`diak_id`),
+  ADD CONSTRAINT `fv_esem_tanar` FOREIGN KEY (`tanar_id`) REFERENCES `tanar` (`tanar_id`),
+  ADD CONSTRAINT `fv_esem_tant` FOREIGN KEY (`tantargy_id`) REFERENCES `tantargyak` (`tantargy_id`);
 
 --
 -- Megkötések a táblához `tantargyak`
