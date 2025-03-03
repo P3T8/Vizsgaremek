@@ -1,3 +1,5 @@
+import router from "./webesendpoint";
+
 // Tantárgy
 router.delete('/tantargy/:id', (req, res) => {
     db.query('DELETE FROM tantargy WHERE id = ?', [req.params.id], (err) => {
@@ -21,3 +23,5 @@ router.delete('/diakok/:id', (req, res) => {
         res.json({ message: 'Diák sikeresen törölve' });
     });
 });
+
+export default router;
