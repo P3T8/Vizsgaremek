@@ -1,54 +1,44 @@
-I see that you've uploaded an image with a table outlining various tasks and their corresponding actions for web and desktop applications. Based on this, I'll generate REST API endpoints for these tasks.
+Az API végpontok tervezetéhez figyelembe veszem az adatbázis szerkezetét és a legfontosabb műveleteket (CRUD: Create, Read, Update, Delete). Az alábbi végpontokat javaslom egy RESTful API-hoz:
 
-Here's a possible structure:
+### **1. Diákok kezelése (`/diak`)**
+- **GET `/diak`** – Összes diák lekérése
+- **GET `/diak/{id}`** – Egy adott diák lekérése
+- **POST `/diak`** – Új diák létrehozása
+- **PUT `/diak/{id}`** – Diák adatainak módosítása
+- **DELETE `/diak/{id}`** – Diák törlése
 
-### **Endpoints for Subject (`tantárgy`)**
-- **Create & Read Subject**
-  - `POST /subjects` (Request body: subject details)
-  - `GET /subjects/{id}` (Retrieve subject details)
-  
-- **Delete Subject**
-  - `DELETE /subjects/{id}`
-  
-- **Update Subject**
-  - `PUT /subjects/{id}` (Request body: updated details)
+### **2. Tanárok kezelése (`/tanar`)**
+- **GET `/tanar`** – Összes tanár lekérése
+- **GET `/tanar/{id}`** – Egy adott tanár lekérése
+- **POST `/tanar`** – Új tanár hozzáadása
+- **PUT `/tanar/{id}`** – Tanár adatainak módosítása
+- **DELETE `/tanar/{id}`** – Tanár törlése
+
+### **3. Tantárgyak kezelése (`/tantargyak`)**
+- **GET `/tantargyak`** – Összes tantárgy listázása
+- **GET `/tantargyak/{id}`** – Egy adott tantárgy adatainak lekérése
+- **POST `/tantargyak`** – Új tantárgy hozzáadása
+- **PUT `/tantargyak/{id}`** – Tantárgy módosítása
+- **DELETE `/tantargyak/{id}`** – Tantárgy törlése
+
+### **4. Tanár és tantárgy összerendelés (`/tanartantargy`)**
+- **GET `/tanartantargy`** – Tanárok és tantárgyak összerendeléseinek listázása
+- **POST `/tanartantargy`** – Új összerendelés létrehozása
+- **DELETE `/tanartantargy/{tanar_id}/{tantargy_id}`** – Összerendelés törlése
+
+### **5. Események kezelése (`/esemeny`)**
+- **GET `/esemeny`** – Összes esemény listázása
+- **GET `/esemeny/{id}`** – Egy adott esemény lekérése
+- **POST `/esemeny`** – Új esemény hozzáadása
+- **PUT `/esemeny/{id}`** – Esemény módosítása
+- **DELETE `/esemeny/{id}`** – Esemény törlése
+
+### **6. Üzenetek kezelése (`/uzenetek`)**
+- **GET `/uzenetek`** – Összes üzenet listázása
+- **GET `/uzenetek/{id}`** – Egy adott üzenet lekérése
+- **POST `/uzenetek`** – Új üzenet küldése
+- **DELETE `/uzenetek/{id}`** – Üzenet törlése
 
 ---
 
-### **Endpoints for Teacher (`tanár`)**
-- **Create & Read Teacher**
-  - `POST /teachers/register` (Request body: teacher details, requires approval)
-  - `GET /teachers/{id}` (Retrieve teacher details)
-  
-- **Delete Teacher**
-  - `DELETE /teachers/{id}`
-  
-- **Update Teacher**
-  - `PUT /teachers/{id}` (Request body: updated details)
-
----
-
-### **Endpoints for Student (`diák`)**
-- **Create & Read Student**
-  - `POST /students` (Request body: student details)
-  - `GET /students/{id}` (Retrieve student details)
-  
-- **Delete Student**
-  - `DELETE /students/{id}`
-  
-- **Update Student**
-  - `PUT /students/{id}` (Request body: updated details)
-
----
-
-### **Endpoints for Events (`esemény`)**
-- **Student Requesting a Time Slot from a Teacher**
-  - `POST /appointments/request` (Request body: student ID, teacher ID, requested time)
-  
-- **Teacher Approving or Rejecting Request**
-  - `PUT /appointments/{id}/approve` (Approve appointment request)
-  - `PUT /appointments/{id}/reject` (Reject appointment request)
-
-Each of these would follow standard authentication based on email & password.
-
-Would you like me to refine any part or add authentication details? 🚀
+Ez az API terv lehetővé teszi a teljes adatbázis kezelését egy jól szervezett RESTful struktúrában. Ha szükséged van bővítésre (pl. autentikáció, jogosultságkezelés), jelezd! 🚀
