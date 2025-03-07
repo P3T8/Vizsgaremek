@@ -1,115 +1,113 @@
-import express from 'express';
-import * as db from '../db.js';
+import express from "express";
+import * as db from "../db.js"; // Feltételezve, hogy innen jönnek az adatok
 const router = express.Router();
 
-// Tanárok kezelése
-router.post('/tanar/regisztracio', (req, res) => {
-    const { nev, tantargy, varos, nem } = req.body;
-    if (!nev || !tantargy || !varos || !nem) {
-        return res.status(400).json({ error: 'Hiányzó adat(ok): név, tantárgy, város, nem kötelező!' });
+// Feltételezett adatszerkezetek (példa: ha nincs adatbázis)
+let diakok = [];
+let tanarok = [];
+let tantargyak = [];
+let tanarTantargy = [];
+let esemenyek = [];
+let uzenetek = [];
+
+// ---- Diákok ----
+router.get("/diak", (req, res) => res.json(diakok));
+router.get("/diak/:id", (req, res) => {
+    const diak = diakok.find(d => d.id == req.params.id);
+    diak ? res.json(diak) : res.status(404).json({ error: "Diák nem található" });
+});
+router.post("/diak", (req, res) => {
+    if (!req.body.id || !req.body.nev) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
     }
-
-    db.query(
-        'INSERT INTO tanar (nev, tantargy, varos, nem) VALUES (?, ?, ?, ?)',
-        [nev, tantargy, varos, nem],
-        (err, result) => {
-            if (err) return res.status(500).json({ error: 'Hiba a regisztráció során' });
-            res.status(201).json({ message: 'Sikeres regisztráció', tanarId: result.insertId });
-        }
-    );
+    diakok.push(req.body);
+    res.status(201).json(req.body);
+});
+router.put("/diak/:id", (req, res) => {
+    let index = diakok.findIndex(d => d.id == req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Diák nem található" });
+    diakok[index] = { ...diakok[index], ...req.body };
+    res.json(diakok[index]);
+});
+router.delete("/diak/:id", (req, res) => {
+    let prevLength = diakok.length;
+    diakok = diakok.filter(d => d.id != req.params.id);
+    prevLength > diakok.length ? res.status(204).send() : res.status(404).json({ error: "Diák nem található" });
 });
 
-router.get('/tanarok/:id', (req, res) => {
-    db.query('SELECT * FROM tanar WHERE id = ?', [req.params.id], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Hiba a tanár adatainak lekérésekor' });
-        if (result.length === 0) return res.status(404).json({ error: 'Nincs ilyen ID-vel rendelkező tanár' });
-        res.json(result[0]);
-    });
+// ---- Tanárok ----
+router.get("/tanar", (req, res) => res.json(tanarok));
+router.get("/tanar/:id", (req, res) => {
+    const tanar = tanarok.find(t => t.id == req.params.id);
+    tanar ? res.json(tanar) : res.status(404).json({ error: "Tanár nem található" });
 });
-
-
-
-router.put('/tanarok/:id', (req, res) => {
-    const { nev, tantargy, varos, nem } = req.body;
-    if (!nev || !tantargy || !varos || !nem) {
-        return res.status(400).json({ error: 'Hiányzó adatok' });
+router.post("/tanar", (req, res) => {
+    if (!req.body.id || !req.body.nev) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
     }
-
-    db.query(
-        'UPDATE tanar SET nev = ?, tantargy = ?, varos = ?, nem = ? WHERE id = ?',
-        [nev, tantargy, varos, nem, req.params.id],
-        (err) => {
-            if (err) return res.status(500).json({ error: 'Hiba a tanár frissítése során' });
-            res.json({ message: 'Tanár sikeresen frissítve' });
-        }
-    );
+    tanarok.push(req.body);
+    res.status(201).json(req.body);
+});
+router.put("/tanar/:id", (req, res) => {
+    let index = tanarok.findIndex(t => t.id == req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Tanár nem található" });
+    tanarok[index] = { ...tanarok[index], ...req.body };
+    res.json(tanarok[index]);
+});
+router.delete("/tanar/:id", (req, res) => {
+    let prevLength = tanarok.length;
+    tanarok = tanarok.filter(t => t.id != req.params.id);
+    prevLength > tanarok.length ? res.status(204).send() : res.status(404).json({ error: "Tanár nem található" });
 });
 
-// Diákok kezelése
-router.post('/diakok', (req, res) => {
-    const { nev, email } = req.body;
-    if (!nev || !email) return res.status(400).json({ error: 'Név és email megadása kötelező' });
-    
-    db.query('INSERT INTO diak (nev, email) VALUES (?, ?)', [nev, email], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Hiba a diák hozzáadása során' });
-        res.status(201).json({ message: 'Diák sikeresen létrehozva', id: result.insertId });
-    });
+// ---- Tantárgyak ----
+router.get("/tantargyak", (req, res) => res.json(tantargyak));
+router.post("/tantargyak", (req, res) => {
+    if (!req.body.id || !req.body.nev) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
+    }
+    tantargyak.push(req.body);
+    res.status(201).json(req.body);
 });
 
-router.get('/diakok/:id', (req, res) => {
-    db.query('SELECT * FROM diak WHERE id = ?', [req.params.id], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Hiba a diák lekérése során' });
-        if (result.length === 0) return res.status(404).json({ error: 'Nincs ilyen ID-vel rendelkező diák' });
-        res.json(result[0]);
-    });
+// ---- Tanár-Tantárgy összerendelés ----
+router.get("/tanartantargy", (req, res) => res.json(tanarTantargy));
+router.post("/tanartantargy", (req, res) => {
+    if (!req.body.tanar_id || !req.body.tantargy_id) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
+    }
+    tanarTantargy.push(req.body);
+    res.status(201).json(req.body);
+});
+router.delete("/tanartantargy/:tanar_id/:tantargy_id", (req, res) => {
+    let prevLength = tanarTantargy.length;
+    tanarTantargy = tanarTantargy.filter(tt => !(tt.tanar_id == req.params.tanar_id && tt.tantargy_id == req.params.tantargy_id));
+    prevLength > tanarTantargy.length ? res.status(204).send() : res.status(404).json({ error: "Kapcsolat nem található" });
 });
 
-router.delete('/diakok/:id', (req, res) => {
-    db.query('DELETE FROM diak WHERE id = ?', [req.params.id], (err) => {
-        if (err) return res.status(500).json({ error: 'Hiba a diák törlése során' });
-        res.json({ message: 'Diák sikeresen törölve' });
-    });
+// ---- Események ----
+router.get("/esemeny", (req, res) => res.json(esemenyek));
+router.post("/esemeny", (req, res) => {
+    if (!req.body.id || !req.body.leiras) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
+    }
+    esemenyek.push(req.body);
+    res.status(201).json(req.body);
 });
 
-router.put('/diakok/:id', (req, res) => {
-    const { nev, email } = req.body;
-    if (!nev || !email) return res.status(400).json({ error: 'Név és email megadása kötelező' });
-    
-    db.query('UPDATE diak SET nev = ?, email = ? WHERE id = ?', [nev, email, req.params.id], (err) => {
-        if (err) return res.status(500).json({ error: 'Hiba a diák frissítése során' });
-        res.json({ message: 'Diák sikeresen frissítve' });
-    });
+// ---- Üzenetek ----
+router.get("/uzenetek", (req, res) => res.json(uzenetek));
+router.post("/uzenetek", (req, res) => {
+    if (!req.body.id || !req.body.szoveg) {
+        return res.status(400).json({ error: "Hiányzó adatok" });
+    }
+    uzenetek.push(req.body);
+    res.status(201).json(req.body);
 });
-
-// Tantárgyak kezelése
-router.post('/tantargy', (req, res) => {
-    const { name } = req.body;
-    if (!name) return res.status(400).json({ error: 'Tantárgy név megadása kötelező' });
-    
-    db.query('INSERT INTO tantargy (name) VALUES (?)', [name], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Hiba a tantárgy hozzáadása során' });
-        res.status(201).json({ message: 'Tantárgy sikeresen létrehozva', id: result.insertId });
-    });
-});
-
-router.get('/tantargy/:id', (req, res) => {
-    db.query('SELECT * FROM tantargy WHERE id = ?', [req.params.id], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Hiba a tantárgy lekérése során' });
-        if (result.length === 0) return res.status(404).json({ error: 'Nincs ilyen ID-vel rendelkező tantárgy' });
-        res.json(result[0]);
-    });
-});
-
-
-
-router.put('/tantargy/:id', (req, res) => {
-    const { name } = req.body;
-    if (!name) return res.status(400).json({ error: 'Új tantárgy név megadása kötelező' });
-    
-    db.query('UPDATE tantargy SET nev = ? WHERE id = ?', [name, req.params.id], (err) => {
-        if (err) return res.status(500).json({ error: 'Hiba a tantárgy frissítése során' });
-        res.json({ message: 'Tantárgy sikeresen frissítve' });
-    });
+router.delete("/uzenetek/:id", (req, res) => {
+    let prevLength = uzenetek.length;
+    uzenetek = uzenetek.filter(u => u.id != req.params.id);
+    prevLength > uzenetek.length ? res.status(204).send() : res.status(404).json({ error: "Üzenet nem található" });
 });
 
 export default router;
