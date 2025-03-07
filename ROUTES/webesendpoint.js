@@ -1,5 +1,5 @@
 import express from "express";
-import * as db from "../db.js"; // Feltételezve, hogy innen jönnek az adatok
+import * as db from '../db.js'; // Feltételezve, hogy innen jönnek az adatok
 const router = express.Router();
 
 // Feltételezett adatszerkezetek (példa: ha nincs adatbázis)
