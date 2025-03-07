@@ -1,10 +1,11 @@
 import express from 'express';
-import * as db from '../db.js';
+import * as db from '../db.js'; // Helyes elérési út
 const router = express.Router();
-import * as  asztaliendpoint from '/ROUTES/asztaliendpoint';
-import * as webesendpoint from '/ROUTES/webesendpoint';
+import * as asztaliendpoint from './ROUTES/asztaliendpoint';
+import * as webesendpoint from './ROUTES';
 
-/*
+
+
 // Tanárok kezelése
 router.post('/tanar/regisztracio', (req, res) => {
     const { nev, tantargy, varos, nem } = req.body;
@@ -124,5 +125,5 @@ router.put('/tantargy/:id', (req, res) => {
         res.json({ message: 'Tantárgy sikeresen frissítve' });
     });
 });
-*/
+
 export default router;
