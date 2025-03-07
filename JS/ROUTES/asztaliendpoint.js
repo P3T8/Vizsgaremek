@@ -1,7 +1,7 @@
-import router from "./webesendpoint";
-
+//import router from "./webesendpoint";
+const asztaliendpoint = express.Router();
 // Tantárgy
-router.delete('/tantargy/:id', (req, res) => {
+asztaliendpoint.delete('/tantargy/:id', (req, res) => {
     db.query('DELETE FROM tantargy WHERE id = ?', [req.params.id], (err) => {
         if (err) {
             console.error("Tantárgy törlés hiba:", err); // Hiba logolása
@@ -12,7 +12,7 @@ router.delete('/tantargy/:id', (req, res) => {
 });
 
 // Tanár
-router.delete('/tanar/:id', (req, res) => {
+asztaliendpoint.delete('/tanar/:id', (req, res) => {
     db.query('DELETE FROM tanar WHERE id = ?', [req.params.id], (err) => {
         if (err) {
             console.error("Tanár törlés hiba:", err); // Hiba logolása
@@ -23,7 +23,7 @@ router.delete('/tanar/:id', (req, res) => {
 });
 
 // Diák
-router.delete('/diak/:id', (req, res) => {
+asztaliendpoint.delete('/diak/:id', (req, res) => {
     db.query('DELETE FROM diak WHERE id = ?', [req.params.id], (err) => {
         if (err) {
             console.error("Diák törlés hiba:", err); // Hiba logolása

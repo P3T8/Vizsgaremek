@@ -1,8 +1,8 @@
 import express from 'express';
-import * as db from '../db.js'; // Helyes elérési út
+import * as db from './db.js'; // Helyes elérési út
 const router = express.Router();
-import * as asztaliendpoint from './ROUTES/asztaliendpoint';
-import * as webesendpoint from './ROUTES';
+import asztaliendpoint from './ROUTES/asztaliendpoint.js';
+//import * as webesendpoint from './ROUTES/webesendpoint';
 
 
 
