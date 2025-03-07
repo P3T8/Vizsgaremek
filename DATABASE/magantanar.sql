@@ -3,9 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2025. Már 06. 12:32
+-- Létrehozás ideje: 2025. Már 07. 08:51
 -- Kiszolgáló verziója: 10.4.28-MariaDB
 -- PHP verzió: 8.2.4
+
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,7 +22,12 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `magantanar`
 --
+-- Dobja az adatbázist, ha már létezik
+DROP DATABASE IF EXISTS `magantanar`;
 
+-- Új adatbázis létrehozása
+CREATE DATABASE `magantanar`;
+USE `magantanar`;
 -- --------------------------------------------------------
 
 --
@@ -211,7 +218,9 @@ ALTER TABLE `esemeny`
 -- A tábla indexei `tanar`
 --
 ALTER TABLE `tanar`
-  ADD PRIMARY KEY (`tanar_id`);
+  ADD PRIMARY KEY (`tanar_id`),
+  ADD UNIQUE KEY `t_nev` (`t_nev`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- A tábla indexei `tanartantargy`
