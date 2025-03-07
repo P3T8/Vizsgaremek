@@ -1,7 +1,10 @@
 import express from 'express';
 import * as db from '../db.js';
 const router = express.Router();
+import * as  asztaliendpoint from '/ROUTES/asztaliendpoint';
+import * as webesendpoint from '/ROUTES/webesendpoint';
 
+/*
 // Tanárok kezelése
 router.post('/tanar/regisztracio', (req, res) => {
     const { nev, tantargy, varos, nem } = req.body;
@@ -121,5 +124,5 @@ router.put('/tantargy/:id', (req, res) => {
         res.json({ message: 'Tantárgy sikeresen frissítve' });
     });
 });
-
+*/
 export default router;
