@@ -3,7 +3,7 @@ import * as db from '../db.js';
 const router = express.Router();
 
 // Tanárok kezelése
-router.post('/tanarok/regisztracio', (req, res) => {
+router.post('/tanar/regisztracio', (req, res) => {
     const { nev, tantargy, varos, nem } = req.body;
     if (!nev || !tantargy || !varos || !nem) {
         return res.status(400).json({ error: 'Hiányzó adat(ok): név, tantárgy, város, nem kötelező!' });
@@ -19,7 +19,7 @@ router.post('/tanarok/regisztracio', (req, res) => {
     );
 });
 
-router.get('/tanarok/:id', (req, res) => {
+router.get('/tanar/:id', (req, res) => {
     db.query('SELECT * FROM tanar WHERE id = ?', [req.params.id], (err, result) => {
         if (err) return res.status(500).json({ error: 'Hiba a tanár adatainak lekérésekor' });
         if (result.length === 0) return res.status(404).json({ error: 'Nincs ilyen ID-vel rendelkező tanár' });
@@ -27,14 +27,14 @@ router.get('/tanarok/:id', (req, res) => {
     });
 });
 
-router.delete('/tanarok/:id', (req, res) => {
+router.delete('/tanar/:id', (req, res) => {
     db.query('DELETE FROM tanar WHERE id = ?', [req.params.id], (err) => {
         if (err) return res.status(500).json({ error: 'Hiba a tanár törlése során' });
         res.json({ message: 'Tanár sikeresen törölve' });
     });
 });
 
-router.put('/tanarok/:id', (req, res) => {
+router.put('/tanar/:id', (req, res) => {
     const { nev, tantargy, varos, nem } = req.body;
     if (!nev || !tantargy || !varos || !nem) {
         return res.status(400).json({ error: 'Hiányzó adatok' });
