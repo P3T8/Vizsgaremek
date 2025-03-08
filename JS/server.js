@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import diak from './routes/diak.js';
-import tanar from './routes/tanar.js';
-import tanartantargy from './routes/tanartantargy.js';
-import tantargy from './routes/tantargyak.js';
+import diak from './ROUTES/diak.js';
+import tanar from './ROUTES/tanar.js';
+import tanartantargy from './ROUTES/tanartantargy.js';
+import tantargy from './ROUTES/tantargyak.js';
 
 const app = express();
 const port = 3000;
