@@ -2,12 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Gép: 127.0.0.1:3307
--- Létrehozás ideje: 2025. Már 07. 08:51
--- Kiszolgáló verziója: 10.4.28-MariaDB
--- PHP verzió: 8.2.4
-
-
+-- Gép: 127.0.0.1
+-- Létrehozás ideje: 2025. Már 12. 20:04
+-- Kiszolgáló verziója: 10.4.32-MariaDB
+-- PHP verzió: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -22,12 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `magantanar`
 --
--- Dobja az adatbázist, ha már létezik
-DROP DATABASE IF EXISTS `magantanar`;
 
--- Új adatbázis létrehozása
-CREATE DATABASE `magantanar`;
-USE `magantanar`;
 -- --------------------------------------------------------
 
 --
@@ -144,7 +137,6 @@ INSERT INTO `tanartantargy` (`tanar_id`, `tantargy_id`) VALUES
 CREATE TABLE `tantargyak` (
   `tantargy_id` int(11) NOT NULL,
   `tantargy_nev` varchar(255) DEFAULT NULL,
-  `tanar_id` int(11) DEFAULT NULL,
   `oradij` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -152,18 +144,18 @@ CREATE TABLE `tantargyak` (
 -- A tábla adatainak kiíratása `tantargyak`
 --
 
-INSERT INTO `tantargyak` (`tantargy_id`, `tantargy_nev`, `tanar_id`, `oradij`) VALUES
-(1, 'Matematika', 1, 5000),
-(2, 'Fizika', 2, 4500),
-(3, 'Kémia', 3, 4800),
-(4, 'Biológia', 4, 4700),
-(5, 'Irodalom', 5, 4000),
-(6, 'Statisztika', 6, 5300),
-(7, 'Fizikai tudományok', 7, 4600),
-(8, 'Matematika statisztika', 8, 4700),
-(9, 'Biológia ökológia', 9, 4800),
-(10, 'Politikai tudományok', 10, 4900),
-(11, 'Műszaki ismeretek', 11, 5000);
+INSERT INTO `tantargyak` (`tantargy_id`, `tantargy_nev`, `oradij`) VALUES
+(1, 'Matematika', 5000),
+(2, 'Fizika', 4500),
+(3, 'Kémia', 4800),
+(4, 'Biológia', 4700),
+(5, 'Irodalom', 4000),
+(6, 'Statisztika', 5300),
+(7, 'Fizikai tudományok', 4600),
+(8, 'Matematika statisztika', 4700),
+(9, 'Biológia ökológia', 4800),
+(10, 'Politikai tudományok', 4900),
+(11, 'Műszaki ismeretek', 5000);
 
 -- --------------------------------------------------------
 
