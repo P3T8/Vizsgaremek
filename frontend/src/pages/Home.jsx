@@ -1,23 +1,50 @@
 import './App.css';
-import { Button, Container, Nav, Navbar, NavDropdown, Row, Col } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const suggestions = ["Home", "Selection", "About", "Profile", "Settings"];
+  
+  const filteredSuggestions = searchTerm
+    ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
+    : [];
+
   return (
     <div className="d-flex flex-column min-vh-100 w-100">
       <header>
         <Navbar expand="lg" bg="dark" variant="dark" className="w-100">
           <Container fluid>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <NavDropdown title="Main" id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Home</NavDropdown.Item>
-                  <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Selection</NavDropdown.Item>
-                  <NavDropdown.Item href="#" onClick={() => window.location.reload()}>About</NavDropdown.Item>
-                </NavDropdown>
-              </Nav>
+            <Nav>
+              <NavDropdown title="Main" id="basic-nav-dropdown">
+                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Home</NavDropdown.Item>
+                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Selection</NavDropdown.Item>
+                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>About</NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+            <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
+              <Form className="position-relative w-50">
+                <Form.Control 
+                  type="search" 
+                  placeholder="Search" 
+                  aria-label="Search" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="form-control"
+                />
+                {filteredSuggestions.length > 0 && (
+                  <ul className="list-group position-absolute w-100 mt-1 shadow">
+                    {filteredSuggestions.map((suggestion, index) => (
+                      <li key={index} className="list-group-item" onClick={() => setSearchTerm(suggestion)}>
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </Form>
             </Navbar.Collapse>
+            <Button variant="outline-light" className="ms-auto">Log in</Button>
           </Container>
         </Navbar>
       </header>
@@ -33,10 +60,11 @@ function Home() {
       </main>
       <footer className="py-5 mt-auto bg-dark w-100">
         <Container fluid className='px-8'>
-        <p className="text-center text-white"> &copy; 2025 Our Website for teacher searching! <br/>
+          <p className="text-center text-white"> &copy; 2025 Our Website for teacher searching! <br/>
             <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer"><br/>
               <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
-            </a></p>
+            </a>
+          </p>
         </Container>
       </footer>
     </div>
