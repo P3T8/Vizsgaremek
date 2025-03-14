@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
-  const suggestions = ["Home", "Selection", "About", "Profile", "Settings"];
+  const suggestions = ["Home", "Selection", "About"];
   
   const filteredSuggestions = searchTerm
     ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -44,7 +44,7 @@ function Home() {
                 )}
               </Form>
             </Navbar.Collapse>
-            <Button variant="outline-light" className="ms-auto">Log in</Button>
+            <Button variant="outline-light" className="ms-auto">Login</Button>
           </Container>
         </Navbar>
       </header>
