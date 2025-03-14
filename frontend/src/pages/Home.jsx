@@ -1,4 +1,3 @@
-import './App.css';
 import { useState } from 'react';
 import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,9 +17,11 @@ function Home() {
           <Container fluid>
             <Nav>
               <NavDropdown title="Main" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Home</NavDropdown.Item>
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Selection</NavDropdown.Item>
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>About</NavDropdown.Item>
+                {suggestions.slice(0, 3).map((item, index) => (
+                  <NavDropdown.Item key={index} href="#" onClick={() => window.location.reload()}>
+                    {item}
+                  </NavDropdown.Item>
+                ))}
               </NavDropdown>
             </Nav>
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
@@ -31,7 +32,6 @@ function Home() {
                   aria-label="Search" 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="form-control"
                 />
                 {filteredSuggestions.length > 0 && (
                   <ul className="list-group position-absolute w-100 mt-1 shadow">
@@ -59,7 +59,7 @@ function Home() {
         </Container>
       </main>
       <footer className="py-5 mt-auto bg-dark w-100">
-        <Container fluid className='px-8'>
+        <Container fluid>
           <p className="text-center text-white"> &copy; 2025 Our Website for teacher searching! <br/>
             <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer"><br/>
               <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
