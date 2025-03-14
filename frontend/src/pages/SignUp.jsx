@@ -30,7 +30,7 @@ function SignUp() {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+    <Container className="d-flex justify-content-center align-items-center min-vh-70">
       <Form onSubmit={handleSubmit} className="p-4 border rounded shadow bg-white" style={{ width: '350px' }}>
         <Form.Group className="mb-3">
           <Form.Label>Név:</Form.Label>

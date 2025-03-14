@@ -18,7 +18,7 @@ function Login() {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
+    <Container className="d-flex justify-content-center align-items-center vh-60">
       <div className="p-4 border rounded shadow bg-light">
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">

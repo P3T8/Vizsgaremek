@@ -9,11 +9,22 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [isRegistered, setIsRegistered] = useState(true); // Új állapot regisztráció ellenőrzésére
   const suggestions = ["Home", "Selection", "About"];
   
   const filteredSuggestions = searchTerm
     ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
     : [];
+
+  const handleLoginClick = () => {
+    setIsLogin(true);
+    setShowModal(true);
+  };
+
+  const handleSignUpClick = () => {
+    setIsLogin(false);
+    setShowModal(true);
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100 w-100">
@@ -52,7 +63,12 @@ function App() {
                 )}
               </Form>
             </Navbar.Collapse>
-            <Button variant="outline-light" className="ms-auto" onClick={() => setShowModal(true)}>Login</Button>
+            <Button variant="outline-light" className="ms-auto" onClick={handleLoginClick}>
+              Login
+            </Button>
+            <Button variant="outline-light" className="ms-2" onClick={handleSignUpClick}>
+              Sign Up
+            </Button>
           </Container>
         </Navbar>
       </header>
@@ -81,17 +97,14 @@ function App() {
         <Modal.Header closeButton>
           <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className="py-3">
           {isLogin ? <Login /> : <SignUp />}
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? "Regisztráció" : "Bejelentkezés"}
-          </Button>
-        </Modal.Footer>
       </Modal>
     </div>
   );
 }
+
+
 
 export default App;
