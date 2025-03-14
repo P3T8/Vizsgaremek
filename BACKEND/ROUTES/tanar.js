@@ -1,5 +1,5 @@
 import express from 'express';
-import { pool } from '../routes/db.js';
+import { pool } from './db.js';
 
 const tanar = express.Router();
 
