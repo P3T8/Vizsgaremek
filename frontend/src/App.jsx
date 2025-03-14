@@ -1,10 +1,14 @@
 import './App.css';
 import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "../src/pages/Login";
+import SignUp from "../src/pages/SignUp";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const suggestions = ["Home", "Selection", "About"];
   
   const filteredSuggestions = searchTerm
@@ -18,9 +22,9 @@ function App() {
           <Container fluid>
             <Nav>
               <NavDropdown title="Main" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Home</NavDropdown.Item>
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>Selection</NavDropdown.Item>
-                <NavDropdown.Item href="#" onClick={() => window.location.reload()}>About</NavDropdown.Item>
+                {suggestions.map((item, index) => (
+                  <NavDropdown.Item key={index} href="#">{item}</NavDropdown.Item>
+                ))}
               </NavDropdown>
             </Nav>
             <Navbar.Collapse id="basic-navbar-nav" className="justify-content-center">
@@ -36,7 +40,11 @@ function App() {
                 {filteredSuggestions.length > 0 && (
                   <ul className="list-group position-absolute w-100 mt-1 shadow">
                     {filteredSuggestions.map((suggestion, index) => (
-                      <li key={index} className="list-group-item" onClick={() => setSearchTerm(suggestion)}>
+                      <li 
+                        key={index} 
+                        className="list-group-item" 
+                        onClick={() => { setSearchTerm(suggestion); }}
+                      >
                         {suggestion}
                       </li>
                     ))}
@@ -44,7 +52,7 @@ function App() {
                 )}
               </Form>
             </Navbar.Collapse>
-            <Button variant="outline-light" className="ms-auto">Login</Button>
+            <Button variant="outline-light" className="ms-auto" onClick={() => setShowModal(true)}>Login</Button>
           </Container>
         </Navbar>
       </header>
@@ -67,6 +75,21 @@ function App() {
           </p>
         </Container>
       </footer>
+
+      {/* Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isLogin ? <Login /> : <SignUp />}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setIsLogin(!isLogin)}>
+            {isLogin ? "Regisztráció" : "Bejelentkezés"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
