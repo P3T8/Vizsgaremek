@@ -1,23 +1,17 @@
 import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Card, Modal } from 'react-bootstrap';
+import { Container, Navbar, Nav, NavDropdown, Row, Col, Button, Card, Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../pages/Login";
 
 function Selection() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activePage, setActivePage] = useState("Selection");
   const [showModal, setShowModal] = useState(false);
-
-  const suggestions = ["Home", "Selection", "About"];
-
-  const filteredSuggestions = searchTerm
-    ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
-    : [];
-
-  const handleNavigation = (page) => {
-    setActivePage(page);
-    setSearchTerm("");
-  };
+  const services = [
+    { title: "Featured Selection", description: "Explore our latest and best selections of services." },
+    { title: "Top Rated", description: "Check out the most popular services available." },
+    { title: "Newest Offers", description: "Discover the newest services added to our platform." },
+    { title: "Popular Services", description: "See what services are trending among users." },
+    { title: "Recommended Teachers", description: "Find top-rated teachers recommended by others." }
+  ];
 
   return (
     <div className="d-flex flex-column min-vh-100 w-100">
@@ -28,40 +22,11 @@ function Selection() {
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
                 <NavDropdown title="Menu" id="basic-nav-dropdown">
-                  {suggestions.map((item) => (
-                    <NavDropdown.Item
-                      key={item}
-                      href="#"
-                      onClick={() => handleNavigation(item)}
-                      className={activePage === item ? "active text-warning" : ""}
-                    >
-                      {item}
-                    </NavDropdown.Item>
-                  ))}
+                  <NavDropdown.Item href="#">Home</NavDropdown.Item>
+                  <NavDropdown.Item href="#">Selection</NavDropdown.Item>
+                  <NavDropdown.Item href="#">About</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <Form className="position-relative mx-auto w-50">
-                <Form.Control
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {filteredSuggestions.length > 0 && (
-                  <ul className="list-group position-absolute w-100 mt-1 shadow">
-                    {filteredSuggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        className="list-group-item"
-                        onClick={() => handleNavigation(suggestion)}
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </Form>
               <Button variant="outline-light" className="ms-2" onClick={() => setShowModal(true)}>
                 Login
               </Button>
@@ -74,42 +39,23 @@ function Selection() {
         <Container fluid>
           <Row className="px-4 my-5 justify-content-center">
             <Col sm="8" className="text-center">
-              <h1 className="font-weight-light">{activePage}</h1>
-              <p className="mt-4">
-                {activePage === "Home"
-                  ? "Welcome to our homepage!"
-                  : activePage === "Selection"
-                  ? "Browse our selection of services."
-                  : "Learn more about us."}
-              </p>
+              <h1 className="font-weight-light">Selection</h1>
+              <p className="mt-4">Browse our selection of services.</p>
             </Col>
           </Row>
-
-          <Row className="justify-content-center">
-            <Col sm="4">
-              <Card className="shadow">
-                <Card.Img variant="top" src="https://via.placeholder.com/300x180" alt="Example" />
-                <Card.Body>
-                  <Card.Title>Featured Selection</Card.Title>
-                  <Card.Text>
-                    Explore our latest and best selections of services.
-                  </Card.Text>
-                  <Button variant="primary">View More</Button>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col sm="4">
-              <Card className="shadow">
-                <Card.Img variant="top" src="https://via.placeholder.com/300x180" alt="Example" />
-                <Card.Body>
-                  <Card.Title>Top Rated</Card.Title>
-                  <Card.Text>
-                    Check out the most popular services available.
-                  </Card.Text>
-                  <Button variant="primary">Discover</Button>
-                </Card.Body>
-              </Card>
-            </Col>
+          <Row className="g-4">
+            {services.map((service, index) => (
+              <Col md="6" lg="4" key={index} className="d-flex align-items-stretch">
+                <Card className="shadow w-100">
+                  <Card.Img variant="top" src="https://via.placeholder.com/300x180" alt="Example" />
+                  <Card.Body>
+                    <Card.Title>{service.title}</Card.Title>
+                    <Card.Text>{service.description}</Card.Text>
+                    <Button variant="primary">Learn More</Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
           </Row>
         </Container>
       </main>
@@ -118,7 +64,7 @@ function Selection() {
         <Container fluid>
           <p className="text-center text-white">
             &copy; 2025 Our Website for teacher searching! <br/>
-            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer"> <br />
               <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
             </a>
           </p>

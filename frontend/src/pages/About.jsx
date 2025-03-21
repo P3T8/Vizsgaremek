@@ -79,8 +79,7 @@ function About() {
                 {activePage === "Home"
                   ? "Welcome to our homepage!"
                   : activePage === "Selection"
-                  ? "Browse our selection of services."
-                  : "Learn more about us."}
+                  }
               </p>
             </Col>
           </Row>
@@ -91,7 +90,7 @@ function About() {
         <Container fluid>
           <p className="text-center text-white">
             &copy; 2025 Our Website for teacher searching! <br/>
-            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer"> <br />
               <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
             </a>
           </p>
