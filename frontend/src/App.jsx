@@ -1,6 +1,6 @@
 import './App.css';
-import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Form, Button, Modal } from 'react-bootstrap';
+import { useState, useMemo } from 'react';
+import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../src/pages/Login";
 import SignUp from "../src/pages/SignUp";
@@ -9,16 +9,18 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-  const [activePage, setActivePage] = useState("Home"); // Aktív oldal követése
+  const [activePage, setActivePage] = useState("Home"); 
+
   const suggestions = ["Home", "Selection", "About"];
 
-  const filteredSuggestions = searchTerm
-    ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
-    : [];
+  const filteredSuggestions = useMemo(() => 
+    searchTerm ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase())) : [],
+    [searchTerm, suggestions]
+  );
 
   const handleNavigation = (page) => {
     setActivePage(page);
-    setSearchTerm(""); // Kereső törlése navigáció után
+    setSearchTerm(""); 
   };
 
   const handleLoginClick = () => {
@@ -32,7 +34,7 @@ function App() {
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100 w-100">
+    <>
       <header>
         <Navbar expand="lg" bg="dark" variant="dark" className="w-100">
           <Container fluid>
@@ -44,7 +46,10 @@ function App() {
                     <NavDropdown.Item
                       key={item}
                       href="#"
-                      onClick={() => handleNavigation(item)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavigation(item);
+                      }}
                       className={activePage === item ? "active text-warning" : ""}
                     >
                       {item}
@@ -61,7 +66,7 @@ function App() {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 {filteredSuggestions.length > 0 && (
-                  <ul className="list-group position-absolute w-100 mt-1 shadow">
+                  <ul className="list-group position-absolute w-100 mt-1 shadow" style={{ zIndex: 1000 }}>
                     {filteredSuggestions.map((suggestion, index) => (
                       <li
                         key={index}
@@ -87,16 +92,18 @@ function App() {
 
       <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
         <Container fluid>
-          <div className="text-center">
-            <h1 className="font-weight-light">{activePage}</h1>
-            <p className="mt-4">
-              {activePage === "Home"
-                ? "Welcome to our homepage!"
-                : activePage === "Selection"
-                ? "Browse our selection of services."
-                : "Learn more about us."}
-            </p>
-          </div>
+          <Row className="px-4 my-5 justify-content-center">
+            <Col sm="8" className="text-center">
+              <h1 className="font-weight-light">{activePage}</h1>
+              <p className="mt-4">
+                {activePage === "Home"
+                  ? "Welcome to our homepage!"
+                  : activePage === "Selection"
+                  ? "Browse our selection of services."
+                  : "Learn more about us."}
+              </p>
+            </Col>
+          </Row>
         </Container>
       </main>
 
@@ -111,7 +118,7 @@ function App() {
         </Container>
       </footer>
 
-      {/* Modal ablak bejelentkezéshez és regisztrációhoz */}
+      {/* Modal for Login and Sign Up */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
@@ -120,7 +127,7 @@ function App() {
           {isLogin ? <Login /> : <SignUp />}
         </Modal.Body>
       </Modal>
-    </div>
+    </>
   );
 }
 

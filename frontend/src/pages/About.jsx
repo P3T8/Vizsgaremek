@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Form, Button, Row, Col } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown, Form, Button, Row, Col, Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "../pages/Login";
 
 function About() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activePage, setActivePage] = useState("About"); // Aktív oldal követése
+  const [activePage, setActivePage] = useState("About");
+  const [showModal, setShowModal] = useState(false);
+
   const suggestions = ["Home", "Selection", "About"];
 
   const filteredSuggestions = searchTerm
@@ -13,7 +16,7 @@ function About() {
 
   const handleNavigation = (page) => {
     setActivePage(page);
-    setSearchTerm(""); // Kereső törlése navigáció után
+    setSearchTerm("");
   };
 
   return (
@@ -59,7 +62,9 @@ function About() {
                   </ul>
                 )}
               </Form>
-              <Button variant="outline-light" className="ms-2">Login</Button>
+              <Button variant="outline-light" className="ms-2" onClick={() => setShowModal(true)}>
+                Login
+              </Button>
             </Navbar.Collapse>
           </Container>
         </Navbar>
@@ -92,6 +97,16 @@ function About() {
           </p>
         </Container>
       </footer>
+
+      {/* Modal for Login */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Bejelentkezés</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-3">
+          <Login />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }

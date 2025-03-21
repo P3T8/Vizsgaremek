@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Card, Modal } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "../pages/Login";
 
 function Selection() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activePage, setActivePage] = useState("Selection"); // Aktív oldal követése
+  const [activePage, setActivePage] = useState("Selection");
+  const [showModal, setShowModal] = useState(false);
+
   const suggestions = ["Home", "Selection", "About"];
 
   const filteredSuggestions = searchTerm
@@ -13,7 +16,7 @@ function Selection() {
 
   const handleNavigation = (page) => {
     setActivePage(page);
-    setSearchTerm(""); // Kereső törlése navigáció után
+    setSearchTerm("");
   };
 
   return (
@@ -59,7 +62,9 @@ function Selection() {
                   </ul>
                 )}
               </Form>
-              <Button variant="outline-light" className="ms-auto">Login</Button>
+              <Button variant="outline-light" className="ms-2" onClick={() => setShowModal(true)}>
+                Login
+              </Button>
             </Navbar.Collapse>
           </Container>
         </Navbar>
@@ -82,7 +87,7 @@ function Selection() {
 
           <Row className="justify-content-center">
             <Col sm="4">
-              <Card>
+              <Card className="shadow">
                 <Card.Img variant="top" src="https://via.placeholder.com/300x180" alt="Example" />
                 <Card.Body>
                   <Card.Title>Featured Selection</Card.Title>
@@ -90,6 +95,18 @@ function Selection() {
                     Explore our latest and best selections of services.
                   </Card.Text>
                   <Button variant="primary">View More</Button>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col sm="4">
+              <Card className="shadow">
+                <Card.Img variant="top" src="https://via.placeholder.com/300x180" alt="Example" />
+                <Card.Body>
+                  <Card.Title>Top Rated</Card.Title>
+                  <Card.Text>
+                    Check out the most popular services available.
+                  </Card.Text>
+                  <Button variant="primary">Discover</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -107,6 +124,16 @@ function Selection() {
           </p>
         </Container>
       </footer>
+
+      {/* Modal for Login */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Bejelentkezés</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="py-3">
+          <Login />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
