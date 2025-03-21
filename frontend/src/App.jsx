@@ -4,6 +4,8 @@ import { Container, Nav, Navbar, NavDropdown, Row, Col, Form, Button, Modal } fr
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "../src/pages/Login";
 import SignUp from "../src/pages/SignUp";
+import Selection from '../src/pages/Selection'; 
+import About from './pages/About';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -95,12 +97,11 @@ function App() {
           <Row className="px-4 my-5 justify-content-center">
             <Col sm="8" className="text-center">
               <h1 className="font-weight-light">{activePage}</h1>
-              <p className="mt-4">
-                {activePage === "Home"
-                  ? "Welcome to our homepage!"
-                  : activePage === "Selection"
-                  }
-              </p>
+              <div className="mt-4">
+                {activePage === "Home" && <p>Welcome to our homepage!</p>}
+                {activePage === "Selection" && <Selection />}
+                {activePage === "About" && <About/>}
+              </div>
             </Col>
           </Row>
         </Container>

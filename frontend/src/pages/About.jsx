@@ -1,112 +1,38 @@
 import { useState } from 'react';
-import { Container, Nav, Navbar, NavDropdown, Form, Button, Row, Col, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Button, Card } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
-import Login from "../pages/Login";
 
 function About() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activePage, setActivePage] = useState("About");
-  const [showModal, setShowModal] = useState(false);
+  const [faqVisible, setFaqVisible] = useState([false, false]);
 
-  const suggestions = ["Home", "Selection", "About"];
+  const admins = [
+    { name: "John Doe", email: "johndoe@example.com", phone: "123-456-7890" },
+    { name: "Jane Smith", email: "janesmith@example.com", phone: "987-654-3210" }
+  ];
 
-  const filteredSuggestions = searchTerm
-    ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
-    : [];
-
-  const handleNavigation = (page) => {
-    setActivePage(page);
-    setSearchTerm("");
+  const toggleFaq = (index) => {
+    setFaqVisible(prev => prev.map((visible, i) => (i === index ? !visible : visible)));
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100 w-100">
-      <header>
-        <Navbar expand="lg" bg="dark" variant="dark" className="w-100">
-          <Container fluid>
-            <Navbar.Toggle aria-controls="navbar-nav" />
-            <Navbar.Collapse id="navbar-nav">
-              <Nav className="me-auto">
-                <NavDropdown title="Menu" id="basic-nav-dropdown">
-                  {suggestions.map((item) => (
-                    <NavDropdown.Item
-                      key={item}
-                      href="#"
-                      onClick={() => handleNavigation(item)}
-                      className={activePage === item ? "active text-warning" : ""}
-                    >
-                      {item}
-                    </NavDropdown.Item>
-                  ))}
-                </NavDropdown>
-              </Nav>
-              <Form className="position-relative mx-auto w-50">
-                <Form.Control
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {filteredSuggestions.length > 0 && (
-                  <ul className="list-group position-absolute w-100 mt-1 shadow">
-                    {filteredSuggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        className="list-group-item"
-                        onClick={() => handleNavigation(suggestion)}
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </Form>
-              <Button variant="outline-light" className="ms-2" onClick={() => setShowModal(true)}>
-                Login
-              </Button>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-      </header>
-
-      <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
-        <Container fluid>
-          <Row className="px-4 my-5 justify-content-center">
-            <Col sm="8" className="text-center">
-              <h1 className="font-weight-light">{activePage}</h1>
-              <p className="mt-4">
-                {activePage === "Home"
-                  ? "Welcome to our homepage!"
-                  : activePage === "Selection"
-                  }
-              </p>
-            </Col>
-          </Row>
-        </Container>
-      </main>
-
-      <footer className="py-5 mt-auto bg-dark w-100">
-        <Container fluid>
-          <p className="text-center text-white">
-            &copy; 2025 Our Website for teacher searching! <br/>
-            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer"> <br />
-              <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
-            </a>
-          </p>
-        </Container>
-      </footer>
-
-      {/* Modal for Login */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Bejelentkezés</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="py-3">
-          <Login />
-        </Modal.Body>
-      </Modal>
-    </div>
+    <Container fluid className="d-flex flex-column align-items-center min-vh-100" style={{ margin: "0px auto", padding: "0px auto", marginBottom: "0px" }}>
+      <Row className="g-4 w-100 justify-content-center">
+        {admins.map((admin, index) => (
+          <Col md="6" key={index} className="d-flex align-items-stretch">
+            <Card className="shadow w-100 text-center">
+              <Card.Img variant="top" src="https://via.placeholder.com/150" alt="Profile" className="rounded-circle mx-auto mt-3" style={{ width: "120px", height: "120px" }} />
+              <Card.Body>
+                <Card.Text><strong>Name:</strong> {admin.name}</Card.Text>
+                <Card.Text><strong>E-mail:</strong> {admin.email}</Card.Text>
+                <Card.Text><strong>Tel:</strong> {admin.phone}</Card.Text>
+                <Button variant="primary" onClick={() => toggleFaq(index)}>About</Button>
+                {faqVisible[index] && <Card.Text className="mt-2">More information about {admin.name}.</Card.Text>}
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 
