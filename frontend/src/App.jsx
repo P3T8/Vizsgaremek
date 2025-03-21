@@ -8,28 +8,34 @@ import Selection from '../src/pages/Selection';
 import About from './pages/About';
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [activePage, setActivePage] = useState("Home"); 
+  // Állapotok a keresési kifejezéshez, modális ablakhoz és az aktív oldal nyomon követéséhez
+  const [searchTerm, setSearchTerm] = useState(""); // Keresőmező beviteli állapota
+  const [showModal, setShowModal] = useState(false); // Bejelentkező/regisztrációs modális megjelenítés állapota
+  const [isLogin, setIsLogin] = useState(true); // Bejelentkezési vagy regisztrációs mód váltása
+  const [activePage, setActivePage] = useState("Home"); // Aktív oldal állapota
 
+  // Menüelemek listája
   const suggestions = ["Home", "Selection", "About"];
 
+  // Szűrt találatok keresés alapján (useMemo optimalizálás miatt, hogy ne számolódjon újra minden rendereléskor)
   const filteredSuggestions = useMemo(() => 
     searchTerm ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase())) : [],
     [searchTerm, suggestions]
   );
 
+  // Oldalváltás funkció, amely törli a keresési kifejezést
   const handleNavigation = (page) => {
     setActivePage(page);
     setSearchTerm(""); 
   };
 
+  // Bejelentkező modális megnyitása
   const handleLoginClick = () => {
     setIsLogin(true);
     setShowModal(true);
   };
 
+  // Regisztrációs modális megnyitása
   const handleSignUpClick = () => {
     setIsLogin(false);
     setShowModal(true);
@@ -37,6 +43,7 @@ function App() {
 
   return (
     <>
+      {/* Fejléc */}
       <header>
         <Navbar expand="lg" bg="dark" variant="dark" className="w-100">
           <Container fluid>
@@ -44,6 +51,7 @@ function App() {
             <Navbar.Collapse id="navbar-nav">
               <Nav className="me-auto">
                 <NavDropdown title="Menu" id="basic-nav-dropdown">
+                  {/* Menüelemek dinamikus létrehozása */}
                   {suggestions.map((item) => (
                     <NavDropdown.Item
                       key={item}
@@ -59,6 +67,7 @@ function App() {
                   ))}
                 </NavDropdown>
               </Nav>
+              {/* Keresőmező */}
               <Form className="position-relative mx-auto w-50">
                 <Form.Control
                   type="search"
@@ -67,6 +76,7 @@ function App() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                {/* Keresési javaslatok megjelenítése */}
                 {filteredSuggestions.length > 0 && (
                   <ul className="list-group position-absolute w-100 mt-1 shadow" style={{ zIndex: 1000 }}>
                     {filteredSuggestions.map((suggestion, index) => (
@@ -81,6 +91,7 @@ function App() {
                   </ul>
                 )}
               </Form>
+              {/* Bejelentkezés és regisztráció gombok */}
               <Button variant="outline-light" className="ms-auto" onClick={handleLoginClick}>
                 Login
               </Button>
@@ -92,12 +103,14 @@ function App() {
         </Navbar>
       </header>
 
+      {/* Fő tartalom */}
       <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
         <Container fluid>
           <Row className="px-4 my-5 justify-content-center">
             <Col sm="8" className="text-center">
               <h1 className="font-weight-light">{activePage}</h1>
               <div className="mt-4">
+                {/* Az aktív oldalnak megfelelő komponens megjelenítése */}
                 {activePage === "Home" && <p>Welcome to our homepage!</p>}
                 {activePage === "Selection" && <Selection />}
                 {activePage === "About" && <About/>}
@@ -107,6 +120,7 @@ function App() {
         </Container>
       </main>
 
+      {/* Lábléc */}
       <footer className="py-5 mt-auto bg-dark w-100">
         <Container fluid>
           <p className="text-center text-white">
@@ -118,7 +132,7 @@ function App() {
         </Container>
       </footer>
 
-      {/* Modal for Login and Sign Up */}
+      {/* Bejelentkezési és regisztrációs modális ablak */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>

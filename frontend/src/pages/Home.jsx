@@ -5,27 +5,33 @@ import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 
 function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activePage, setActivePage] = useState("Home");
-  const [showModal, setShowModal] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  // Állapotok a keresési kifejezéshez, az aktív oldalhoz és a modális ablakhoz
+  const [searchTerm, setSearchTerm] = useState(""); // Keresőmező beviteli állapota
+  const [activePage, setActivePage] = useState("Home"); // Aktív oldal állapota
+  const [showModal, setShowModal] = useState(false); // Modális ablak megjelenítése
+  const [isLogin, setIsLogin] = useState(true); // Bejelentkezési vagy regisztrációs mód
 
+  // Menüelemek listája
   const suggestions = ["Home", "Selection", "About"];
 
+  // Szűrt keresési találatok
   const filteredSuggestions = searchTerm
     ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
     : [];
 
+  // Oldalváltás funkció
   const handleNavigation = (page) => {
     setActivePage(page);
     setSearchTerm(""); 
   };
 
+  // Bejelentkezési modális megnyitása
   const handleLoginClick = () => {
     setIsLogin(true);
     setShowModal(true);
   };
 
+  // Regisztrációs modális megnyitása
   const handleSignUpClick = () => {
     setIsLogin(false);
     setShowModal(true);
@@ -33,6 +39,7 @@ function Home() {
 
   return (
     <div className="d-flex flex-column min-vh-100 w-100">
+      {/* Fejléc */}
       <header>
         <Navbar expand="lg" bg="dark" variant="dark" className="w-100">
           <Container fluid>
@@ -52,6 +59,7 @@ function Home() {
                   ))}
                 </NavDropdown>
               </Nav>
+              {/* Keresőmező */}
               <Form className="position-relative mx-auto w-50">
                 <Form.Control
                   type="search"
@@ -60,6 +68,7 @@ function Home() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
+                {/* Keresési javaslatok */}
                 {filteredSuggestions.length > 0 && (
                   <ul className="list-group position-absolute w-100 mt-1 shadow">
                     {filteredSuggestions.map((suggestion, index) => (
@@ -74,6 +83,7 @@ function Home() {
                   </ul>
                 )}
               </Form>
+              {/* Bejelentkezés és regisztráció gombok */}
               <Button variant="outline-light" className="ms-auto" onClick={handleLoginClick}>
                 Login
               </Button>
@@ -85,6 +95,7 @@ function Home() {
         </Navbar>
       </header>
 
+      {/* Fő tartalom */}
       <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
         <Container fluid>
           <Row className="px-4 my-5 justify-content-center">
@@ -101,6 +112,7 @@ function Home() {
         </Container>
       </main>
 
+      {/* Lábléc */}
       <footer className="py-5 mt-auto bg-dark w-100">
         <Container fluid>
           <p className="text-center text-white">
@@ -112,7 +124,7 @@ function Home() {
         </Container>
       </footer>
 
-      {/* Modal for Login and Sign Up */}
+      {/* Bejelentkezési és regisztrációs modális ablak */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
