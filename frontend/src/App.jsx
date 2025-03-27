@@ -63,7 +63,7 @@ function App() {
                   ))}
                 </NavDropdown>
               </Nav>
-  
+    
               {/* Keresőmező */}
               <Form className="position-relative mx-auto w-50">
                 <Form.Control
@@ -87,12 +87,12 @@ function App() {
                   </ul>
                 )}
               </Form>
-  
+    
               {/* Dark mode váltó */}
               <Button variant="outline-light" className="ms-2" onClick={() => setDarkMode(!darkMode)}>
                 {darkMode ? <BsSun size={20} /> : <BsMoon size={20} />}
               </Button>
-  
+    
               {/* Bejelentkezés és regisztráció gombok */}
               <Button variant="outline-light" className="ms-auto" onClick={handleLoginClick}>
                 Login
@@ -100,12 +100,12 @@ function App() {
               <Button variant="outline-light" className="ms-2" onClick={handleSignUpClick}>
                 Sign Up
               </Button>
-  
+    
             </Navbar.Collapse>
           </Container>
         </Navbar>
       </header>
-  
+    
       {/* Fő tartalom */}
       <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
         <Container fluid>
@@ -113,28 +113,26 @@ function App() {
             <Col sm="8" className="text-center">
               <h1 className="font-weight-light">{activePage}</h1>
               <p className="mt-4">
-                {activePage === "Home" ? "Welcome to our homepage!" : activePage === "Selection"}
+                {activePage === "Home" ? "Welcome to our homepage!" : activePage === "Selection" ? <Selection /> : activePage === "About" ? <About /> : null}
               </p>
             </Col>
           </Row>
         </Container>
       </main>
-  
+    
       {/* Lábléc */}
-      {/* Lábléc */}
-<footer className="py-5 mt-auto w-100" style={{ backgroundColor: "navy", color: "white" }}>
-  <Container fluid>
-    <p className="text-center">
-      <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
-        <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
-      </a>
-      <br />
-      &copy; 2025 Our Website for teacher searching!
-    </p>
-  </Container>
-</footer>
-
-  
+      <footer className="py-5 mt-auto w-100" style={{ backgroundColor: "navy", color: "white" }}>
+        <Container fluid>
+          <p className="text-center">
+            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
+              <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
+            </a>
+            <br />
+            &copy; 2025 Our Website for teacher searching!
+          </p>
+        </Container>
+      </footer>
+    
       {/* Bejelentkezési és regisztrációs modális ablak */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
