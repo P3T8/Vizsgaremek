@@ -7,6 +7,8 @@ import SignUp from "../src/pages/SignUp";
 import Selection from '../src/pages/Selection'; 
 import About from './pages/About';
 
+
+
 function App() {
   // Állapotok a keresési kifejezéshez, modális ablakhoz és az aktív oldal nyomon követéséhez
   const [searchTerm, setSearchTerm] = useState(""); // Keresőmező beviteli állapota

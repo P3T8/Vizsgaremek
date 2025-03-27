@@ -1,0 +1,14 @@
+.App {
+    height: 100vh; /* A teljes képernyőt lefedi */
+    background-image: url('./img/Tutorial-bg.jpg'); /* Háttérkép elérési útja */
+    background-size: cover; /* A háttérkép kitölti a teljes képernyőt */
+    background-position: center; /* A háttérkép középre igazítása */
+    background-attachment: fixed; /* A háttérkép rögzítése, nem görgeti el */
+  }
+  
+  .content {
+    color: white;
+    text-align: center;
+    padding: 50px;
+  }
+  
