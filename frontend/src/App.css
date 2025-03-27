@@ -1,14 +1,30 @@
-.App {
-    height: 100vh; /* A teljes képernyőt lefedi */
-    background-image: url('./img/Tutorial-bg.jpg'); /* Háttérkép elérési útja */
-    background-size: cover; /* A háttérkép kitölti a teljes képernyőt */
-    background-position: center; /* A háttérkép középre igazítása */
-    background-attachment: fixed; /* A háttérkép rögzítése, nem görgeti el */
-  }
-  
-  .content {
-    color: white;
-    text-align: center;
-    padding: 50px;
-  }
-  
+/* Alapértelmezett világos mód */
+body {
+  background-color: #ffffff;
+  color: #000000;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode beállítás */
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Navbar sötét módban */
+body.dark-mode .navbar {
+  background-color: #1f1f1f !important;
+}
+
+/* Sötét mód input mező */
+body.dark-mode input {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+/* Dark mode dropdown */
+body.dark-mode .dropdown-menu {
+  background-color: #333;
+  color: white;
+}

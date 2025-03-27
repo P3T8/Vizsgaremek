@@ -27,7 +27,7 @@ function Selection() {
       <Row className="g-4 justify-content-center my-5">
         {/* Nevek kártyái */}
         {people.map((person, index) => (
-          <Col md="6" lg="4" key={index} className="d-flex align-items-stretch">
+          <Col sm="6" md="4" lg="3" xl="3" key={index} className="d-flex align-items-stretch">
             <Card className="shadow w-100 text-center">
               <Card.Img 
                 variant="top" 
