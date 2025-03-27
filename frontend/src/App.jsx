@@ -121,12 +121,13 @@ function App() {
       </main>
     
       {/* Lábléc */}
-      <footer className="py-5 mt-auto w-100" style={{ backgroundColor: "navy", color: "white" }}>
+      <footer className="py-4 mt-auto mb-0 w-100 h-100vh p-0" style={{ backgroundColor: "navy", color: "white" }}>
         <Container fluid>
           <p className="text-center">
             <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
-              <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="50" height="50" className="rounded-circle"/>
+              <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="60" height="60" className="rounded-circle"/>
             </a>
+
             <br />
             &copy; 2025 Our Website for teacher searching!
           </p>

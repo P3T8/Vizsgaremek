@@ -11,7 +11,7 @@ function About() {
 
   return (
     <>      
-      <Container fluid className="d-flex justify-content-center align-items-center min-vh-100 p-0 mt-4 mb-4">
+      <Container fluid className="d-flex justify-content-center align-items-center min-vh-90 p-0 mt-4 mb-4">
         <Row className="g-2 w-100 justify-content-center">
           {admins.map((admin, index) => (
             <Col md="4" key={index} className="d-flex justify-content-center">
