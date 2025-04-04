@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios"; // Az axios importálása
-import { useHistory } from "react-router-dom"; // React Router Hook a navigáláshoz
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -14,12 +14,11 @@ function SignUp() {
     termsAccepted: false,
   });
 
-  const [error, setError] = useState(""); // Hibakezelés
-  const [loading, setLoading] = useState(false); // Betöltési állapot
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const history = useHistory(); // React Router history hook
+  const navigate = useNavigate();
 
-  // A felhasználói input változások figyelése
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -28,9 +27,9 @@ function SignUp() {
     });
   };
 
-  // A regisztrációs kérés kezelése
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert("A jelszavak nem egyeznek meg!");
       return;
@@ -42,18 +41,15 @@ function SignUp() {
     }
 
     setLoading(true);
-    setError(""); // Reseteljük a hibát a kérés előtt
+    setError("");
 
     try {
-      // API kérés a backendhez
       const response = await axios.post("http://localhost:5000/api/register", formData);
 
-      // Ha a regisztráció sikeres
       if (response.data.success) {
         console.log("Sikeres regisztráció:", response.data);
         alert("Regisztráció sikeres!");
-        // Átirányítjuk a felhasználót a bejelentkezés oldalra
-        history.push("/login");
+        navigate("/login");
       } else {
         setError("Hiba történt a regisztráció során.");
       }
@@ -67,14 +63,9 @@ function SignUp() {
 
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-70">
-      <Form
-        onSubmit={handleSubmit}
-        className="p-4 border rounded shadow bg-white"
-        style={{ width: "350px" }}
-      >
+      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow bg-white" style={{ width: "350px" }}>
         <h2>Regisztráció</h2>
 
-        {/* Hibák megjelenítése, ha vannak */}
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form.Group className="mb-3">
@@ -147,10 +138,7 @@ function SignUp() {
           <Button type="submit" variant="primary" disabled={loading}>
             {loading ? "Regisztrálás..." : "Regisztráció"}
           </Button>
-          <Button
-            variant="secondary"
-            onClick={() => history.push("/login")}  // Bejelentkezés oldalra navigálás
-          >
+          <Button variant="secondary" onClick={() => navigate("/login")}>
             Bejelentkezés
           </Button>
         </div>

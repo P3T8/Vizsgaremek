@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios"; // Az axios importálása
-import { useHistory } from "react-router-dom"; // React Router Hook a navigáláshoz
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // 🔄 useHistory helyett
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -10,34 +10,28 @@ function Login() {
     password: "",
   });
 
-  const [error, setError] = useState(""); // Hibakezelés
-  const [loading, setLoading] = useState(false); // Betöltési állapot kezelés
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const history = useHistory(); // React Router history hook
+  const navigate = useNavigate(); // 🔄 Navigáláshoz React Router v6-ban
 
-  // A felhasználói input változások figyelése
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  // A bejelentkezési kérés kezelése
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(""); // Reseteljük a hibát a kérés előtt
+    setError("");
 
     try {
-      // API kérés a backendhez
       const response = await axios.post("http://localhost:5000/api/login", credentials);
 
-      // Ha a bejelentkezés sikeres
       if (response.data.success) {
         console.log("Bejelentkezve:", response.data);
         alert("Sikeres bejelentkezés!");
-        // Átirányítjuk a felhasználót a főoldalra vagy dashboard-ra
-        history.push("/dashboard");
+        navigate("/dashboard"); // 🔄 Navigáció dashboardra
       } else {
-        // Hibás bejelentkezés esetén
         setError("Hibás felhasználónév vagy jelszó.");
       }
     } catch (error) {
@@ -53,17 +47,17 @@ function Login() {
       <div className="p-4 border rounded shadow bg-light">
         <h2>Bejelentkezés</h2>
 
-        {/* Hibák megjelenítése, ha vannak */}
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Control
               type="text"
-              placeholder="Felhasználónév/ E-mail cím"
+              placeholder="Felhasználónév / E-mail"
               name="username"
               value={credentials.username}
               onChange={handleChange}
+              required
             />
           </Form.Group>
 
@@ -75,11 +69,12 @@ function Login() {
               value={credentials.password}
               onChange={handleChange}
               className="fs-4 text-center"
+              required
             />
           </Form.Group>
 
           <div className="d-flex justify-content-around">
-            <Button variant="outline-primary" type="button" onClick={() => history.push("/signup")}>
+            <Button variant="outline-primary" type="button" onClick={() => navigate("/signup")}>
               Regisztráció
             </Button>
             <Button variant="primary" type="submit" disabled={loading}>
