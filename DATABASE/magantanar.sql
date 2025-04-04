@@ -21,8 +21,11 @@ SET time_zone = "+00:00";
 -- Adatbázis: `magantanar`
 --
 
--- --------------------------------------------------------
+-- Adatbázis létrehozása, ha még nem létezik
+CREATE DATABASE IF NOT EXISTS `magantanar` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
+-- Az adatbázis használata
+USE `magantanar`;
 --
 -- Tábla szerkezet ehhez a táblához `diak`
 --
