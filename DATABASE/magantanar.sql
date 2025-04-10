@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Már 12. 20:04
--- Kiszolgáló verziója: 10.4.32-MariaDB
--- PHP verzió: 8.0.30
+-- Gép: 127.0.0.1:3307
+-- Létrehozás ideje: 2025. Ápr 10. 12:42
+-- Kiszolgáló verziója: 10.4.28-MariaDB
+-- PHP verzió: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -21,11 +21,8 @@ SET time_zone = "+00:00";
 -- Adatbázis: `magantanar`
 --
 
--- Adatbázis létrehozása, ha még nem létezik
-CREATE DATABASE IF NOT EXISTS `magantanar` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+-- --------------------------------------------------------
 
--- Az adatbázis használata
-USE `magantanar`;
 --
 -- Tábla szerkezet ehhez a táblához `diak`
 --
@@ -44,16 +41,16 @@ CREATE TABLE `diak` (
 
 INSERT INTO `diak` (`diak_id`, `d_nev`, `email`, `jelszo`, `aktiv`) VALUES
 (1, 'Kiss Anna', 'anna.kiss@example.com', 'jelszo123', 'true'),
-(2, 'Nagy Gábor', 'gabor.nagy@example.com', 'jelszo124', 'false'),
-(3, 'Szabó Júlia', 'julia.szabo@example.com', 'jelszo125', ''),
-(4, 'Horváth Mária', 'maria.horvath@example.com', 'jelszo126', ''),
-(5, 'Tóth Péter', 'peter.toth@example.com', 'jelszo127', ''),
-(6, 'Mészáros Zoltán', 'zoltan.meszaros@example.com', 'jelszo128', ''),
-(7, 'Horváth Ádám', 'adam.horvath@example.com', 'jelszo129', ''),
-(8, 'Tóth Klára', 'klara.toth@example.com', 'jelszo130', ''),
-(9, 'Kovács Norbert', 'norbert.kovacs@example.com', 'jelszo131', ''),
-(10, 'Nagy Zsófia', 'zsofia.nagy@example.com', 'jelszo132', ''),
-(11, 'Péter Katalin', 'katalin.peter@example.com', 'jelszo133', '');
+(2, 'Nagy Gábor', 'gabor.nagy@example.com', 'jelszo124', 'true'),
+(3, 'Szabó Júlia', 'julia.szabo@example.com', 'jelszo125', 'false'),
+(4, 'Horváth Mária', 'maria.horvath@example.com', 'jelszo126', 'true'),
+(5, 'Tóth Péter', 'peter.toth@example.com', 'jelszo127', 'false'),
+(6, 'Mészáros Zoltán', 'zoltan.meszaros@example.com', 'jelszo128', 'false'),
+(7, 'Horváth Ádám', 'adam.horvath@example.com', 'jelszo129', 'false'),
+(8, 'Tóth Klára', 'klara.toth@example.com', 'jelszo130', 'false'),
+(9, 'Kovács Norbert', 'norbert.kovacs@example.com', 'jelszo131', 'false'),
+(10, 'Nagy Zsófia', 'zsofia.nagy@example.com', 'jelszo132', 'false'),
+(11, 'Péter Katalin', 'katalin.peter@example.com', 'jelszo133', 'false');
 
 -- --------------------------------------------------------
 
@@ -101,15 +98,15 @@ CREATE TABLE `tanar` (
 INSERT INTO `tanar` (`tanar_id`, `t_nev`, `iranyitoszam`, `varos`, `utca`, `hazszam`, `email`, `jelszo`, `telefonszam`, `dijszabas`, `bemutatkozas`, `bszamla`, `adoszam`, `IBAN`, `aktiv`) VALUES
 (1, 'Nagy Péter', '1011', 'Budapest', 'Fő utca', '1', 'peter.nagy@example.com', 'tanar123', '+36123456789', '5000 ', 'Tapasztalt matematika tanár.', 12345678, '12345678-1-42', 'HU12345678901234567890123456', 'true'),
 (2, 'Szabó László', '1022', 'Budapest', 'Történelem utca', '3', 'laszlo.szabo@example.com', 'tanar456', '+36123456790', '4500 ', 'Fizika tanár és kutató.', 23456789, '23456789-2-43', 'HU23456789012345678901234567', 'false'),
-(3, 'Kovács Eszter', '1033', 'Budapest', 'Kémia utca', '5', 'eszter.kovacs@example.com', 'tanar789', '+36123456791', '4800 ', 'Kémia szakértő.', 34567890, '34567890-3-44', 'HU34567890123456789012345678', ''),
-(4, 'Horváth Zoltán', '1044', 'Budapest', 'Biológia utca', '7', 'zoltan.horvath@example.com', 'tanar101', '+36123456792', '4700 ', 'Biológia tanár.', 45678901, '45678901-4-45', 'HU45678901234567890123456789', ''),
-(5, 'Tóth Anita', '1055', 'Budapest', 'Irodalom utca', '9', 'anita.toth@example.com', 'tanar112', '+36123456793', '4000 ', 'Történelem tanár és mentor.', 56789012, '56789012-5-46', 'HU56789012345678901234567890', ''),
-(6, 'Mészáros Katalin', '1066', 'Budapest', 'Matematika utca', '12', 'katalin.meszaros@example.com', 'tanar113', '+36123456794', '5300 ', 'Matematika és statisztika tanár.', 67890123, '67890123-6-47', 'HU67890123456789012345678901', ''),
-(7, 'Juhász Ferenc', '1077', 'Budapest', 'Fizikai utca', '13', 'ferenc.juhasz@example.com', 'tanar114', '+36123456795', '4600 ', 'Fizikai kutató és tanár.', 78901234, '78901234-7-48', 'HU78901234567890123456789012', ''),
-(8, 'Balogh Zsófia', '1088', 'Budapest', 'Zsófia utca', '15', 'balogh.zsofia@example.com', 'tanar115', '+36123456796', '4700 ', 'Matematika és statisztika előadó.', 89012345, '', 'HU89012345678901234567890123', ''),
-(9, 'Varga Béla', '1099', 'Budapest', 'Béla utca', '17', 'bela.varga@example.com', 'tanar116', '+36123456797', '4800 ', 'Biológia és ökológia oktató.', 90123456, '90123456-9-50', 'HU90123456789012345678901234', ''),
-(10, 'Kiss Judit', '1101', 'Budapest', 'Judit utca', '19', 'judit.kiss@example.com', 'tanar117', '+36123456798', '4900 ', 'Történelem és politika szakértő.', 12345678, '12345678-10-51', 'HU12345678901234567890123456', ''),
-(11, 'Farkas Tamás', '1102', 'Budapest', 'Műszaki utca', '21', 'tamas.farkas@example.com', 'tanar118', '+36123456799', '5000 ', 'Műszaki ismeretek tanár.', 11223344, '11223344-11-52', 'HU11223344556677889900123456', '');
+(3, 'Kovács Eszter', '1033', 'Budapest', 'Kémia utca', '5', 'eszter.kovacs@example.com', 'tanar789', '+36123456791', '4800 ', 'Kémia szakértő.', 34567890, '34567890-3-44', 'HU34567890123456789012345678', 'false'),
+(4, 'Horváth Zoltán', '1044', 'Budapest', 'Biológia utca', '7', 'zoltan.horvath@example.com', 'tanar101', '+36123456792', '4700 ', 'Biológia tanár.', 45678901, '45678901-4-45', 'HU45678901234567890123456789', 'false'),
+(5, 'Tóth Anita', '1055', 'Budapest', 'Irodalom utca', '9', 'anita.toth@example.com', 'tanar112', '+36123456793', '4000 ', 'Történelem tanár és mentor.', 56789012, '56789012-5-46', 'HU56789012345678901234567890', 'true'),
+(6, 'Mészáros Katalin', '1066', 'Budapest', 'Matematika utca', '12', 'katalin.meszaros@example.com', 'tanar113', '+36123456794', '5300 ', 'Matematika és statisztika tanár.', 67890123, '67890123-6-47', 'HU67890123456789012345678901', 'true'),
+(7, 'Juhász Ferenc', '1077', 'Budapest', 'Fizikai utca', '13', 'ferenc.juhasz@example.com', 'tanar114', '+36123456795', '4600 ', 'Fizikai kutató és tanár.', 78901234, '78901234-7-48', 'HU78901234567890123456789012', 'false'),
+(8, 'Balogh Zsófia ', '1088', 'Budapest', 'Zsófia utca', '15', 'balogh.zsofia@example.com', 'tanar115', '+36123456796', '4700 ', 'Matematika és statisztika előadó.', 89012345, '35624892-6-18', 'HU89012345678901234567890123', 'false'),
+(9, 'Varga Béla', '1099', 'Budapest', 'Béla utca', '17', 'bela.varga@example.com', 'tanar116', '+36123456797', '4800 ', 'Biológia és ökológia oktató.', 90123456, '90123456-9-50', 'HU90123456789012345678901234', 'false'),
+(10, 'Kiss Judit', '1101', 'Budapest', 'Judit utca', '19', 'judit.kiss@example.com', 'tanar117', '+36123456798', '4900 ', 'Történelem és politika szakértő.', 12345678, '12345678-10-51', 'HU12345678901234567890123456', 'false'),
+(11, 'Farkas Tamás', '1102', 'Budapest', 'Műszaki utca', '21', 'tamas.farkas@example.com', 'tanar118', '+36123456799', '5000 ', 'Műszaki ismeretek tanár.', 11223344, '11223344-11-52', 'HU11223344556677889900123456', 'false');
 
 -- --------------------------------------------------------
 
@@ -246,19 +243,19 @@ ALTER TABLE `uzenetek`
 -- AUTO_INCREMENT a táblához `diak`
 --
 ALTER TABLE `diak`
-  MODIFY `diak_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `diak_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT a táblához `tanar`
 --
 ALTER TABLE `tanar`
-  MODIFY `tanar_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `tanar_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT a táblához `tantargyak`
 --
 ALTER TABLE `tantargyak`
-  MODIFY `tantargy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `tantargy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT a táblához `uzenetek`
