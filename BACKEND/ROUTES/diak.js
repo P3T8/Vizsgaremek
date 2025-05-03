@@ -55,7 +55,7 @@ diak.post("/", async (req, res) => {
 
         // Feltételezve, hogy az adatbázis auto-incrementálja az ID-t
         await pool.query(
-            'INSERT INTO diak (d_nev, email, password) VALUES (?, ?, ?)', 
+            'INSERT INTO diak (d_nev, email, jelszo) VALUES (?, ?, ?)', // Módosítva: jelszo mező használata
             [d_nev, email, hashedPassword]
         );
 
@@ -131,7 +131,7 @@ diak.post("/login", async (req, res) => {
             const user = users[0];
 
             // Jelszó ellenőrzése bcrypt-tel
-            const isMatch = await bcrypt.compare(password, user.password);
+            const isMatch = await bcrypt.compare(password, user.jelszo); // Módosítva: jelszo mező használata
 
             if (isMatch) {
                 // Sikeres bejelentkezés esetén JWT token generálása

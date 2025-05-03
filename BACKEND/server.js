@@ -14,10 +14,11 @@ app.use(express.json());
 
 // Route-ek
 
-app.use('/diak', diak);
-app.use('/tanar', tanar);
-app.use('/tanartantargy', tanartantargy);
-app.use('/tantargyak', tantargy);
+app.use('/api/diak', diak);
+app.use('/api/tanar', tanar);
+app.use('/api/tanartantargy', tanartantargy);
+app.use('/api/tantargyak', tantargy);
+
 
 // Szerver indítása
 app.listen(port, () => {
