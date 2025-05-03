@@ -9,8 +9,8 @@ export const pool = mysql.createPool({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'magantanar',
-    //port: process.env.DB_PORT || 3306, //sulis gépen ezt a 3307-re átkell írni
-    port: process.env.DB_PORT || 3307, //sulis gépen ezt a kell használni
+    port: process.env.DB_PORT || 3306, //sulis gépen ezt a 3307-re átkell írni
+    //port: process.env.DB_PORT || 3307, //sulis gépen ezt a kell használni
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
