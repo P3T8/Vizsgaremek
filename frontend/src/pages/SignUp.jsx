@@ -6,17 +6,20 @@ import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = useState({
-    name: "",
+    tanar_id: "", // Tanároknál ez szükséges
+    diak_id: "", // Diákoknál ez szükséges
+    t_nev: "", // Tanárok neve
+    d_nev: "", // Diákok neve
     email: "",
     username: "",
     password: "",
     confirmPassword: "",
     termsAccepted: false,
+    isTeacher: false, // Eldönthetjük, hogy tanár vagy diák
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -44,14 +47,38 @@ function SignUp() {
     setError("");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/register", formData);
+      // Ha tanár regisztrációról van szó
+      if (formData.isTeacher) {
+        const response = await axios.post("http://localhost:5000/tanar", {
+          tanar_id: formData.tanar_id,
+          t_nev: formData.t_nev,
+          email: formData.email,
+          username: formData.username,
+          password: formData.password,
+        });
 
-      if (response.data.success) {
-        console.log("Sikeres regisztráció:", response.data);
-        alert("Regisztráció sikeres!");
-        navigate("/login");
+        if (response.data.t_nev) {
+          alert("Tanár regisztráció sikeres!");
+          navigate("/login");
+        } else {
+          setError("Hiba történt a tanár regisztrációja során.");
+        }
       } else {
-        setError("Hiba történt a regisztráció során.");
+        // Diák regisztráció
+        const response = await axios.post("http://localhost:5000/diak", {
+          diak_id: formData.diak_id,
+          d_nev: formData.d_nev,
+          email: formData.email,
+          username: formData.username,
+          password: formData.password,
+        });
+
+        if (response.data.d_nev) {
+          alert("Diák regisztráció sikeres!");
+          navigate("/login");
+        } else {
+          setError("Hiba történt a diák regisztrációja során.");
+        }
       }
     } catch (error) {
       setError("Hiba történt a regisztráció során.");
@@ -64,21 +91,48 @@ function SignUp() {
   return (
     <Container className="d-flex justify-content-center align-items-center min-vh-70">
       <Form onSubmit={handleSubmit} className="p-4 border rounded shadow bg-white" style={{ width: "350px" }}>
-        <h2>Regisztráció</h2>
+        <h2>{formData.isTeacher ? "Tanár Regisztráció" : "Diák Regisztráció"}</h2>
 
         {error && <Alert variant="danger">{error}</Alert>}
 
+        {/* Tanár regisztrációs mezők */}
+        {formData.isTeacher ? (
+          <Form.Group className="mb-3">
+            <Form.Label>Tanár ID:</Form.Label>
+            <Form.Control
+              type="text"
+              name="tanar_id"
+              value={formData.tanar_id}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
+        ) : (
+          <Form.Group className="mb-3">
+            <Form.Label>Diák ID:</Form.Label>
+            <Form.Control
+              type="text"
+              name="diak_id"
+              value={formData.diak_id}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
+        )}
+
+        {/* Név mező */}
         <Form.Group className="mb-3">
-          <Form.Label>Név:</Form.Label>
+          <Form.Label>{formData.isTeacher ? "Tanár Név" : "Diák Név"}:</Form.Label>
           <Form.Control
             type="text"
-            name="name"
-            value={formData.name}
+            name={formData.isTeacher ? "t_nev" : "d_nev"}
+            value={formData.isTeacher ? formData.t_nev : formData.d_nev}
             onChange={handleChange}
             required
           />
         </Form.Group>
 
+        {/* E-mail mező */}
         <Form.Group className="mb-3">
           <Form.Label>E-mail:</Form.Label>
           <Form.Control
@@ -90,6 +144,7 @@ function SignUp() {
           />
         </Form.Group>
 
+        {/* Felhasználónév mező */}
         <Form.Group className="mb-3">
           <Form.Label>Felhasználónév:</Form.Label>
           <Form.Control
@@ -101,6 +156,7 @@ function SignUp() {
           />
         </Form.Group>
 
+        {/* Jelszó mező */}
         <Form.Group className="mb-3">
           <Form.Label>Jelszó:</Form.Label>
           <Form.Control
@@ -112,6 +168,7 @@ function SignUp() {
           />
         </Form.Group>
 
+        {/* Jelszó megerősítése */}
         <Form.Group className="mb-3">
           <Form.Label>Jelszó újra:</Form.Label>
           <Form.Control
@@ -123,6 +180,7 @@ function SignUp() {
           />
         </Form.Group>
 
+        {/* Felhasználói feltételek elfogadása */}
         <Form.Group className="mb-3">
           <Form.Check
             type="checkbox"
@@ -134,6 +192,7 @@ function SignUp() {
           />
         </Form.Group>
 
+        {/* Regisztrációs gomb */}
         <div className="d-flex justify-content-between">
           <Button type="submit" variant="primary" disabled={loading}>
             {loading ? "Regisztrálás..." : "Regisztráció"}
@@ -142,6 +201,24 @@ function SignUp() {
             Bejelentkezés
           </Button>
         </div>
+
+        {/* Választási lehetőség tanár vagy diák között */}
+        <Form.Group className="mt-3">
+          <Form.Check
+            type="radio"
+            name="isTeacher"
+            label="Tanár"
+            checked={formData.isTeacher}
+            onChange={() => setFormData({ ...formData, isTeacher: true })}
+          />
+          <Form.Check
+            type="radio"
+            name="isTeacher"
+            label="Diák"
+            checked={!formData.isTeacher}
+            onChange={() => setFormData({ ...formData, isTeacher: false })}
+          />
+        </Form.Group>
       </Form>
     </Container>
   );

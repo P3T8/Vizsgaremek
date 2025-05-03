@@ -1,5 +1,6 @@
 import express from 'express';
 import { pool } from './db.js';
+import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
 
 const tanar = express.Router();
 
@@ -34,17 +35,22 @@ tanar.get("/:tanar_id", async (req, res) => {
     }
 });
 
-// Tanár létrehozása
+// Tanár regisztráció (létrehozása)
 tanar.post("/", async (req, res) => {
-    const { tanar_id, t_nev } = req.body;
+    const { tanar_id, t_nev, email, username, password } = req.body;
 
-    if (!tanar_id || isNaN(tanar_id) || !t_nev) {
-        return res.status(400).json({ error: "Hiányzó vagy érvénytelen adatok: tanar_id (szám) és t_nev szükséges" });
+    if (!tanar_id || isNaN(tanar_id) || !t_nev || !email || !username || !password) {
+        return res.status(400).json({ error: "Hiányzó vagy érvénytelen adatok: tanar_id (szám), t_nev, email, username és password szükséges" });
     }
 
     try {
-        await pool.query('INSERT INTO tanar (tanar_id, t_nev) VALUES (?, ?)', [tanar_id, t_nev]);
-        res.status(201).json({ tanar_id, t_nev });
+        // Jelszó hash-elése bcrypt-tel
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await pool.query('INSERT INTO tanar (tanar_id, t_nev, email, username, password) VALUES (?, ?, ?, ?, ?)', 
+                         [tanar_id, t_nev, email, username, hashedPassword]);
+        
+        res.status(201).json({ tanar_id, t_nev, email, username });
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });

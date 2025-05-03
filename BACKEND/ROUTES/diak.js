@@ -1,5 +1,6 @@
 import express from 'express';
 import { pool } from './db.js';
+import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
 
 const diak = express.Router();
 
@@ -18,13 +19,11 @@ diak.get("/", async (req, res) => {
 diak.get("/:id", async (req, res) => {
     let { id } = req.params;
 
-    // Ellenőrizzük, hogy az id létezik-e és szám-e
     if (!id || isNaN(id)) {
         return res.status(400).json({ error: "Érvénytelen vagy hiányzó ID" });
     }
 
     try {
-        // Ha az oszlop neve más (pl. diak_id), akkor itt módosítani kell!
         const [diak] = await pool.query('SELECT * FROM diak WHERE diak_id = ?', [id]);
 
         diak.length > 0 ? res.json(diak[0]) : res.status(404).json({ error: "Diák nem található" });
@@ -34,23 +33,26 @@ diak.get("/:id", async (req, res) => {
     }
 });
 
-// Diák létrehozása
+// Diák létrehozása (regisztráció)
 diak.post("/", async (req, res) => {  
-    const { diak_id, d_nev } = req.body;
+    const { diak_id, d_nev, email, username, password } = req.body;
 
-    // Ellenőrzés: minden adat megvan-e
-    if (!diak_id || !d_nev) {
-        return res.status(400).json({ error: "Hiányzó adatok: diak_id és d_nev szükséges" });
+    if (!diak_id || !d_nev || !email || !username || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: diak_id, d_nev, email, username és password szükséges" });
     }
 
-    // Ellenőrzés: diak_id szám legyen
     if (isNaN(diak_id)) {
         return res.status(400).json({ error: "diak_id érvénytelen (számnak kell lennie)" });
     }
 
     try {
-        await pool.query('INSERT INTO diak (diak_id, d_nev) VALUES (?, ?)', [diak_id, d_nev]);
-        res.status(201).json({ diak_id, d_nev });
+        // Jelszó hash-elése bcrypt-tel
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await pool.query('INSERT INTO diak (diak_id, d_nev, email, username, password) VALUES (?, ?, ?, ?, ?)', 
+                         [diak_id, d_nev, email, username, hashedPassword]);
+        
+        res.status(201).json({ diak_id, d_nev, email, username });
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });
@@ -62,12 +64,10 @@ diak.put("/:diak_id", async (req, res) => {
     const { diak_id } = req.params;
     const { d_nev } = req.body;
 
-    // Ellenőrzés: diak_id létezik-e és szám-e
     if (!diak_id || isNaN(diak_id)) {
         return res.status(400).json({ error: "Érvénytelen vagy hiányzó diak_id" });
     }
 
-    // Ellenőrzés: d_nev létezik-e
     if (!d_nev) {
         return res.status(400).json({ error: "Hiányzó adat: d_nev szükséges" });
     }
@@ -90,7 +90,6 @@ diak.put("/:diak_id", async (req, res) => {
 diak.delete("/:diak_id", async (req, res) => {
     const { diak_id } = req.params;
 
-    // Ellenőrzés: diak_id létezik-e és szám-e
     if (!diak_id || isNaN(diak_id)) {
         return res.status(400).json({ error: "Érvénytelen vagy hiányzó diak_id" });
     }
@@ -108,6 +107,5 @@ diak.delete("/:diak_id", async (req, res) => {
         res.status(500).json({ error: 'Hiba az adatbázis törlése során', details: err.message });
     }
 });
-
 
 export default diak;
