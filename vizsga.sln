@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33423.256
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vizsga", "vizsga\vizsga.csproj", "{64FF99A3-6C93-4EE5-B9B1-CF2AE121CC1B}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupTanarKereso", "SetupTanarKereso\SetupTanarKereso.vdproj", "{7275C350-4F07-4E39-A963-2B989112EA62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,8 @@ Global
 		{64FF99A3-6C93-4EE5-B9B1-CF2AE121CC1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64FF99A3-6C93-4EE5-B9B1-CF2AE121CC1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64FF99A3-6C93-4EE5-B9B1-CF2AE121CC1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7275C350-4F07-4E39-A963-2B989112EA62}.Debug|Any CPU.ActiveCfg = Debug
+		{7275C350-4F07-4E39-A963-2B989112EA62}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
