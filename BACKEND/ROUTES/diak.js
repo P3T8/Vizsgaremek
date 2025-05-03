@@ -127,14 +127,14 @@ diak.post("/login", async (req, res) => {
 
         if (users.length > 0) {
             const user = users[0];
+            console.log("Felhasználó megtalálva:", user);  // Logold a felhasználót, hogy ellenőrizd a jelszó hash-t
             const isMatch = await bcrypt.compare(password, user.jelszo);
 
             if (isMatch) {
-                const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs'; // Titkos kulcs
-
+                const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs';
                 const token = jwt.sign(
                     { diak_id: user.diak_id, email: user.email },
-                    JWT_SECRET,  // Használjuk a titkos kulcsot
+                    JWT_SECRET, 
                     { expiresIn: '1h' }
                 );
                 return res.status(200).json({
@@ -143,12 +143,14 @@ diak.post("/login", async (req, res) => {
                     token
                 });
             } else {
+                console.log("Hibás jelszó");  // Logold, hogy miért nem sikerült
                 return res.status(401).json({
                     success: false,
                     error: "Hibás jelszó vagy email"
                 });
             }
         } else {
+            console.log("Felhasználó nem található");  // Logold, hogy nem találták meg a felhasználót
             return res.status(404).json({
                 success: false,
                 error: "Felhasználó nem található"
@@ -162,5 +164,6 @@ diak.post("/login", async (req, res) => {
         });
     }
 });
+
 
 export default diak;

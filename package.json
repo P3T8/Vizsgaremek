@@ -10,6 +10,7 @@
     "module": "^1.2.5",
     "mysql2": "^3.13.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.4.0"
+    "react-router-dom": "^7.4.0",
+    "validator": "^13.15.0"
   }
 }
