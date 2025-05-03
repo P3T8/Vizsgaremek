@@ -1,90 +1,117 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Form, Button, Container, Alert } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function Login({ closeModal }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);  // Hozzáadva a betöltési állapot kezeléséhez
-  const [successMessage, setSuccessMessage] = useState('');  // Hozzáadva sikeres üzenethez
+function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    userType: "diak", // Alapértelmezett bejelentkezési típus (diák)
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    setLoading(true);  // Bekapcsoljuk a betöltési állapotot
-    setError('');  // Az esetleges előző hiba törlése
-    setSuccessMessage('');  // Az esetleges előző siker üzenet törlése
+    setLoading(true);
+    setError(""); // Reset error message
 
     try {
-      const res = await axios.post('http://localhost:5000/api/diak/login', {
-        email,
-        password
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      // A végpont dinamikusan változik a userType alapján
+      const endpoint = formData.userType === "diak"
+        ? "http://localhost:5000/api/diak/login"
+        : "http://localhost:5000/api/tanar/login";
+
+      // Bejelentkezési kérés küldése
+      const response = await axios.post(endpoint, {
+        email: formData.email,
+        password: formData.password,
       });
 
-      console.log('Bejelentkezés sikeres:', res.data);
-      setSuccessMessage('Bejelentkezés sikeres!'); // Sikeres bejelentkezési üzenet
-      setError('');  // Töröljük a hibát, ha sikeres a bejelentkezés
-      localStorage.setItem('token', res.data.token);  // Mentjük a token-t a localStorage-ba
-      if (closeModal && typeof closeModal === 'function') {
-        closeModal(); // Bezárja a modalt, ha a closeModal függvény létezik
-      }
-    } catch (err) {
-      console.error('Bejelentkezési hiba:', err);
-      // Hibakezelés javítása: ellenőrizzük, hogy a válasz rendelkezik-e response objektummal
-      if (err.response) {
-        // Ha van válasz, de hiba történt
-        const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Hiba a bejelentkezés során';
-        setError(errorMessage);  // Az új hibaüzenet beállítása
+      if (response.data.token) {
+        // Ha sikeres a bejelentkezés, mentsük el a token-t
+        localStorage.setItem("token", response.data.token);
+        alert("Bejelentkezés sikeres!");
+        navigate("/dashboard"); // Átirányítás a felhasználói felületre
       } else {
-        // Ha nincs válasz, akkor hálózati hiba
-        setError('Hálózati hiba történt. Kérjük, próbáld meg újra!');
+        setError("Hiba történt a bejelentkezés során.");
       }
+    } catch (error) {
+      const errMessage = error.response?.data?.error || "Hiba történt a bejelentkezés során.";
+      setError(errMessage);
+      console.error("Login failed:", error.response || error);
     } finally {
-      setLoading(false);  // Végül kikapcsoljuk a betöltési állapotot
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-3">
-        <label>Email cím</label>
-        <input 
-          type="email" 
-          className="form-control" 
-          value={email}
-          onChange={(e) => setEmail(e.target.value)} 
-          required 
-        />
-      </div>
-      <div className="mb-3">
-        <label>Jelszó</label>
-        <input 
-          type="password" 
-          className="form-control" 
-          value={password}
-          onChange={(e) => setPassword(e.target.value)} 
-          required 
-        />
-      </div>
+    <Container className="d-flex justify-content-center align-items-center min-vh-70">
+      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow bg-white" style={{ width: "350px" }}>
+        <h2>Bejelentkezés</h2>
 
-      {/* Sikeres üzenet */}
-      {successMessage && <div className="alert alert-success">{successMessage}</div>}
-      
-      {/* Hibás bejelentkezési adatokat jelző hibaüzenet */}
-      {error && <div className="alert alert-danger">{error}</div>}
+        {error && <Alert variant="danger">{error}</Alert>}
 
-      <button 
-        type="submit" 
-        className="btn btn-primary w-100"
-        disabled={loading}  // Gomb letiltása, ha épp bejelentkezés folyamatban van
-      >
-        {loading ? 'Bejelentkezés...' : 'Bejelentkezés'}
-      </button>
-    </form>
+        <Form.Group className="mb-3">
+          <Form.Label>E-mail:</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Jelszó:</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+
+        {/* Felhasználói típus választása */}
+        <Form.Group className="mb-3">
+          <Form.Label>Felhasználói típus:</Form.Label>
+          <Form.Check
+            type="radio"
+            label="Diák"
+            name="userType"
+            value="diak"
+            checked={formData.userType === "diak"}
+            onChange={handleChange}
+          />
+          <Form.Check
+            type="radio"
+            label="Tanár"
+            name="userType"
+            value="tanar"
+            checked={formData.userType === "tanar"}
+            onChange={handleChange}
+          />
+        </Form.Group>
+
+        <Button type="submit" variant="primary" disabled={loading} style={{ width: "100%" }}>
+          {loading ? "Bejelentkezés..." : "Bejelentkezés"}
+        </Button>
+      </Form>
+    </Container>
   );
 }
 

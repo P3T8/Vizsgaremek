@@ -2,11 +2,12 @@ import express from 'express';
 import { pool } from './db.js';
 import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
 import jwt from 'jsonwebtoken'; // JSON Web Token generálása
+import validator from 'validator'; // Email validáláshoz
 
 const diak = express.Router();
 
 // E-mail validálás
-const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+const isValidEmail = (email) => validator.isEmail(email);
 
 // Minden diák lekérése
 diak.get("/", async (req, res) => {
@@ -50,16 +51,14 @@ diak.post("/", async (req, res) => {
     }
 
     try {
-        // Jelszó hash-elése bcrypt-tel
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Feltételezve, hogy az adatbázis auto-incrementálja az ID-t
         await pool.query(
-            'INSERT INTO diak (d_nev, email, jelszo) VALUES (?, ?, ?)', // Módosítva: jelszo mező használata
+            'INSERT INTO diak (d_nev, email, jelszo) VALUES (?, ?, ?)',
             [d_nev, email, hashedPassword]
         );
 
-        res.status(201).json({ d_nev, email }); // Az új regisztráció visszaadása
+        res.status(201).json({ d_nev, email });
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });
@@ -115,7 +114,7 @@ diak.delete("/:diak_id", async (req, res) => {
     }
 });
 
-// Bejelentkezés (auth) - email és jelszó alapján
+// Bejelentkezés (auth)
 diak.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -131,23 +130,36 @@ diak.post("/login", async (req, res) => {
             const isMatch = await bcrypt.compare(password, user.jelszo);
 
             if (isMatch) {
+                const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs'; // Titkos kulcs
+
                 const token = jwt.sign(
                     { diak_id: user.diak_id, email: user.email },
-                    process.env.JWT_SECRET,  // JWT Secret kulcs a környezeti változóból
+                    JWT_SECRET,  // Használjuk a titkos kulcsot
                     { expiresIn: '1h' }
                 );
-                return res.status(200).json({ success: true, message: "Bejelentkezés sikeres!", token });
+                return res.status(200).json({
+                    success: true,
+                    message: "Bejelentkezés sikeres!",
+                    token
+                });
             } else {
-                // Hibás jelszó kezelése (biztonságosabb hibaüzenet)
-                return res.status(401).json({ success: false, error: "Hibás jelszó vagy email" });
+                return res.status(401).json({
+                    success: false,
+                    error: "Hibás jelszó vagy email"
+                });
             }
         } else {
-            // Felhasználó nem található (biztonságosabb hibaüzenet)
-            return res.status(404).json({ success: false, error: "Felhasználó nem található" });
+            return res.status(404).json({
+                success: false,
+                error: "Felhasználó nem található"
+            });
         }
     } catch (err) {
         console.error("Bejelentkezési hiba:", err.message);
-        return res.status(500).json({ error: "Bejelentkezési hiba", details: err.message });
+        return res.status(500).json({
+            error: "Bejelentkezési hiba",
+            details: err.message
+        });
     }
 });
 
