@@ -3,6 +3,7 @@ import { pool } from './db.js';
 import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
 import jwt from 'jsonwebtoken'; // JSON Web Token generálása
 
+
 const diak = express.Router();
 
 // E-mail validálás
@@ -116,6 +117,7 @@ diak.delete("/:diak_id", async (req, res) => {
 });
 
 // Bejelentkezés (auth) - email és jelszó alapján
+// Bejelentkezés (auth) - email és jelszó alapján
 diak.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -124,30 +126,32 @@ diak.post("/login", async (req, res) => {
     }
 
     try {
-        // Keresés a felhasználó e-mail címe alapján
         const [users] = await pool.query('SELECT * FROM diak WHERE email = ?', [email]);
 
         if (users.length > 0) {
             const user = users[0];
-
-            // Jelszó ellenőrzése bcrypt-tel
-            const isMatch = await bcrypt.compare(password, user.jelszo); // Módosítva: jelszo mező használata
+            const isMatch = await bcrypt.compare(password, user.jelszo);
 
             if (isMatch) {
-                // Sikeres bejelentkezés esetén JWT token generálása
-                const token = jwt.sign({ diak_id: user.diak_id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
-
-                res.status(200).json({ message: "Bejelentkezés sikeres!", token });
+                const token = jwt.sign(
+                    { diak_id: user.diak_id, email: user.email },
+                    process.env.JWT_SECRET,  // JWT Secret kulcs a környezeti változóból
+                    { expiresIn: '1h' }
+                );
+                return res.status(200).json({ success: true, message: "Bejelentkezés sikeres!", token });
             } else {
-                res.status(400).json({ error: "Hibás jelszó" });
+                // Hibás jelszó kezelése
+                return res.status(401).json({ success: false, error: "Hibás jelszó" });
             }
         } else {
-            res.status(404).json({ error: "Felhasználó nem található" });
+            // Felhasználó nem található
+            return res.status(404).json({ success: false, error: "Felhasználó nem található" });
         }
     } catch (err) {
         console.error("Bejelentkezési hiba:", err.message);
-        res.status(500).json({ error: 'Bejelentkezési hiba', details: err.message });
+        return res.status(500).json({ error: "Bejelentkezési hiba", details: err.message });
     }
 });
+
 
 export default diak;

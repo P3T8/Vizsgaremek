@@ -1,89 +1,86 @@
-import React, { useState } from "react";
-import { Form, Button, Container, Alert } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
-import { useNavigate } from "react-router-dom"; // 🔄 useHistory helyett
+import { useState } from 'react';
+import axios from 'axios';
 
-function Login() {
-  const [credentials, setCredentials] = useState({
-    username: "",
-    password: "",
-  });
-
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate(); // 🔄 Navigáláshoz React Router v6-ban
-
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+function Login({ closeModal }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);  // Hozzáadva a betöltési állapot kezeléséhez
+  const [successMessage, setSuccessMessage] = useState('');  // Hozzáadva sikeres üzenethez
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+
+    setLoading(true);  // Bekapcsoljuk a betöltési állapotot
+    setError('');  // Az esetleges előző hiba törlése
+    setSuccessMessage('');  // Az esetleges előző siker üzenet törlése
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", credentials);
+      const res = await axios.post('http://localhost:5000/api/diak/login', {
+        email,
+        password
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
-      if (response.data.success) {
-        console.log("Bejelentkezve:", response.data);
-        alert("Sikeres bejelentkezés!");
-        navigate("/dashboard"); // 🔄 Navigáció dashboardra
+      console.log('Bejelentkezés sikeres:', res.data);
+      setSuccessMessage('Bejelentkezés sikeres!'); // Sikeres bejelentkezési üzenet
+      setError('');  // Töröljük a hibát, ha sikeres a bejelentkezés
+      localStorage.setItem('token', res.data.token);  // Mentjük a token-t a localStorage-ba
+      closeModal(); // Bezárja a modalt
+    } catch (err) {
+      console.error('Bejelentkezési hiba:', err);
+      if (err.response) {
+        // Ha van válasz, de hiba történt
+        setError(err.response?.data?.error || 'Hiba a bejelentkezés során');
       } else {
-        setError("Hibás felhasználónév vagy jelszó.");
+        // Ha nincs válasz, akkor hálózati hiba
+        setError('Hálózati hiba történt. Kérjük, próbáld meg újra!');
       }
-    } catch (error) {
-      setError("Hiba történt a bejelentkezés során.");
-      console.error("Login failed:", error);
     } finally {
-      setLoading(false);
+      setLoading(false);  // Végül kikapcsoljuk a betöltési állapotot
     }
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-60">
-      <div className="p-4 border rounded shadow bg-light">
-        <h2>Bejelentkezés</h2>
-
-        {error && <Alert variant="danger">{error}</Alert>}
-
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Felhasználónév / E-mail"
-              name="username"
-              value={credentials.username}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Control
-              type="password"
-              placeholder="Jelszó"
-              name="password"
-              value={credentials.password}
-              onChange={handleChange}
-              className="fs-4 text-center"
-              required
-            />
-          </Form.Group>
-
-          <div className="d-flex justify-content-around">
-            <Button variant="outline-primary" type="button" onClick={() => navigate("/signup")}>
-              Regisztráció
-            </Button>
-            <Button variant="primary" type="submit" disabled={loading}>
-              {loading ? "Bejelentkezés..." : "Bejelentkezés"}
-            </Button>
-          </div>
-        </Form>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label>Email cím</label>
+        <input 
+          type="email" 
+          className="form-control" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)} 
+          required 
+        />
       </div>
-    </Container>
+      <div className="mb-3">
+        <label>Jelszó</label>
+        <input 
+          type="password" 
+          className="form-control" 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)} 
+          required 
+        />
+      </div>
+
+      {/* Sikeres üzenet */}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
+      
+      {/* Hibás bejelentkezési adatokat jelző hibaüzenet */}
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <button 
+        type="submit" 
+        className="btn btn-primary w-100"
+        disabled={loading}  // Gomb letiltása, ha épp bejelentkezés folyamatban van
+      >
+        {loading ? 'Bejelentkezés...' : 'Bejelentkezés'}
+      </button>
+    </form>
   );
 }
 

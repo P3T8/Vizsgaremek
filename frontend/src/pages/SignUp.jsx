@@ -4,6 +4,44 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Véletlenszerű adatok generálása
+const generateRandomData = () => {
+  const randomNames = ["John Doe", "Jane Smith", "Alice Johnson", "Bob Brown"];
+  const randomEmails = ["teacher1@mail.com", "teacher2@mail.com", "teacher3@mail.com"];
+  const randomPassword = "password123";
+  const randomSchool = "Iskola ABC";
+  const randomSubjects = "Matematika, Fizika";
+  const randomPhone = "06123456789";
+  const randomZip = "1234";
+  const randomCity = "Budapest";
+  const randomStreet = "Fő utca";
+  const randomHouseNumber = "12";
+  const randomRate = "2000 Ft/óra";
+  const randomDescription = "Szakértő tanár vagyok a matematika és fizika területén.";
+  const randomBankAccount = "HU12345678901234567890123456";
+  const randomTaxNumber = "12345678-1-23";
+  const randomIban = "HU12345678901234567890123456";
+  
+  return {
+    t_nev: randomNames[Math.floor(Math.random() * randomNames.length)],
+    email: randomEmails[Math.floor(Math.random() * randomEmails.length)],
+    password: randomPassword,
+    confirmPassword: randomPassword,
+    school: randomSchool,
+    subjects: randomSubjects,
+    phone: randomPhone,
+    zip: randomZip,
+    city: randomCity,
+    street: randomStreet,
+    houseNumber: randomHouseNumber,
+    rate: randomRate,
+    description: randomDescription,
+    bankAccount: randomBankAccount,
+    taxNumber: randomTaxNumber,
+    iban: randomIban,
+  };
+};
+
 function SignUp() {
   const [formData, setFormData] = useState({
     t_nev: "",
@@ -13,6 +51,18 @@ function SignUp() {
     confirmPassword: "",
     termsAccepted: false,
     isTeacher: false,
+    school: "",
+    subjects: "",
+    phone: "",
+    zip: "",
+    city: "",
+    street: "",
+    houseNumber: "",
+    rate: "",
+    description: "",
+    bankAccount: "",
+    taxNumber: "",
+    iban: "",
   });
 
   const [error, setError] = useState("");
@@ -41,16 +91,30 @@ function SignUp() {
     }
 
     setLoading(true);
-    setError("");
+    setError(""); // Reset error message
 
     try {
       let response;
 
       if (formData.isTeacher) {
+        // Ha tanár a regisztráló, töltsük ki a mezőket random adatokká
+        const teacherData = { ...formData, ...generateRandomData() };
         response = await axios.post("http://localhost:5000/api/tanar", {
-          t_nev: formData.t_nev,
-          email: formData.email,
-          password: formData.password,
+          t_nev: teacherData.t_nev,
+          email: teacherData.email,
+          password: teacherData.password,
+          school: teacherData.school,
+          subjects: teacherData.subjects,
+          phone: teacherData.phone,
+          zip: teacherData.zip,
+          city: teacherData.city,
+          street: teacherData.street,
+          houseNumber: teacherData.houseNumber,
+          rate: teacherData.rate,
+          description: teacherData.description,
+          bankAccount: teacherData.bankAccount,
+          taxNumber: teacherData.taxNumber,
+          iban: teacherData.iban,
         });
 
         if (response.data.t_nev) {
@@ -60,6 +124,7 @@ function SignUp() {
           setError("Hiba történt a tanár regisztrációja során.");
         }
       } else {
+        // Diák regisztráció
         response = await axios.post("http://localhost:5000/api/diak", {
           d_nev: formData.d_nev,
           email: formData.email,
@@ -90,16 +155,150 @@ function SignUp() {
         {error && <Alert variant="danger">{error}</Alert>}
 
         {formData.isTeacher ? (
-          <Form.Group className="mb-3">
-            <Form.Label>Tanár Név:</Form.Label>
-            <Form.Control
-              type="text"
-              name="t_nev"
-              value={formData.t_nev}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
+          <>
+            <Form.Group className="mb-3">
+              <Form.Label>Tanár Név:</Form.Label>
+              <Form.Control
+                type="text"
+                name="t_nev"
+                value={formData.t_nev}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Iskola:</Form.Label>
+              <Form.Control
+                type="text"
+                name="school"
+                value={formData.school}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Tantárgyak:</Form.Label>
+              <Form.Control
+                type="text"
+                name="subjects"
+                value={formData.subjects}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Telefonszám:</Form.Label>
+              <Form.Control
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Irányítószám:</Form.Label>
+              <Form.Control
+                type="text"
+                name="zip"
+                value={formData.zip}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Város:</Form.Label>
+              <Form.Control
+                type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Utca:</Form.Label>
+              <Form.Control
+                type="text"
+                name="street"
+                value={formData.street}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Házszám:</Form.Label>
+              <Form.Control
+                type="text"
+                name="houseNumber"
+                value={formData.houseNumber}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Díjszabás:</Form.Label>
+              <Form.Control
+                type="text"
+                name="rate"
+                value={formData.rate}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Bemutatkozás:</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Bankszámla:</Form.Label>
+              <Form.Control
+                type="text"
+                name="bankAccount"
+                value={formData.bankAccount}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Adószám:</Form.Label>
+              <Form.Control
+                type="text"
+                name="taxNumber"
+                value={formData.taxNumber}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>IBAN:</Form.Label>
+              <Form.Control
+                type="text"
+                name="iban"
+                value={formData.iban}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          </>
         ) : (
           <Form.Group className="mb-3">
             <Form.Label>Diák Név:</Form.Label>
@@ -157,14 +356,9 @@ function SignUp() {
           />
         </Form.Group>
 
-        <div className="d-flex justify-content-between">
-          <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? "Regisztrálás..." : "Regisztráció"}
-          </Button>
-          <Button variant="secondary" onClick={() => navigate("/login")}>
-            Bejelentkezés
-          </Button>
-        </div>
+        <Button type="submit" variant="primary" disabled={loading} style={{ width: "100%" }}>
+          {loading ? "Regisztrálás..." : "Regisztráció"}
+        </Button>
 
         <Form.Group className="mt-3">
           <Form.Check

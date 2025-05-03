@@ -27,7 +27,7 @@ function AppLayout({
   showModal,
   setShowModal,
   isLogin,
-  setIsLogin
+
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
