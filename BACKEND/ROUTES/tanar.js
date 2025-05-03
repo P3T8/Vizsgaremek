@@ -6,19 +6,15 @@ import validator from 'validator';
 
 const tanar = express.Router();
 
-// E-mail validálás
 const isValidEmail = (email) => validator.isEmail(email);
 
-// 🔐 Bejelentkezés (auth) - EZT FELTÉTLENÜL ELŐRE TESSZÜK
-tanar.post('/login', async (req, res) => {
-    const { email, jelszo } = req.body;
+// Bejelentkezés (auth)
+tanar.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    console.log("Tanár bejelentkezési kísérlet:", { email });
 
-    if (!email || !jelszo) {
-        return res.status(400).json({ error: 'Hiányzó adatok: email és jelszo szükséges' });
-    }
-
-    if (!isValidEmail(email)) {
-        return res.status(400).json({ error: 'Érvénytelen email cím' });
+    if (!email || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: email és password szükséges" });
     }
 
     try {
@@ -29,32 +25,45 @@ tanar.post('/login', async (req, res) => {
             const user = users[0];
 
             if (!user.jelszo) {
-                return res.status(500).json({ error: 'Szerveroldali hiba: érvénytelen jelszó tárolás' });
+                console.error("Hiba: A felhasználó jelszó mezője üres az adatbázisban");
+                return res.status(500).json({ error: "Szerveroldali hiba: érvénytelen jelszó tárolás" });
             }
 
-            const isMatch = await bcrypt.compare(jelszo, user.jelszo);
+            const isMatch = await bcrypt.compare(password, user.jelszo);
 
             if (isMatch) {
                 const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs';
                 const token = jwt.sign(
-                    { tanar_id: user.tanar_id, email: user.email, role: 'tanar' },
+                    { tanar_id: user.tanar_id, email: user.email },
                     JWT_SECRET,
                     { expiresIn: '1h' }
                 );
                 return res.status(200).json({
                     success: true,
-                    message: 'Bejelentkezés sikeres!',
-                    token,
+                    message: "Bejelentkezés sikeres!",
+                    token
                 });
             } else {
-                return res.status(401).json({ success: false, error: 'Hibás jelszó' });
+                return res.status(401).json({
+                    success: false,
+                    error: "Hibás jelszó"
+                });
             }
         } else {
-            return res.status(404).json({ success: false, error: 'Felhasználó nem található' });
+            return res.status(404).json({
+                success: false,
+                error: "Felhasználó nem található"
+            });
         }
     } catch (err) {
-        console.error('Bejelentkezési hiba:', { message: err.message, stack: err.stack });
-        return res.status(500).json({ error: 'Bejelentkezési hiba', details: err.message });
+        console.error("Bejelentkezési hiba:", {
+            message: err.message,
+            stack: err.stack
+        });
+        return res.status(500).json({
+            error: "Bejelentkezési hiba",
+            details: err.message
+        });
     }
 });
 
@@ -64,29 +73,25 @@ tanar.get("/", async (req, res) => {
         const [tanarok] = await pool.query('SELECT * FROM tanar');
         res.json(tanarok);
     } catch (err) {
-        console.error("Hiba az adatbázis lekérdezése során:", err.message);
-        res.status(500).json({ error: 'Hiba az adatbázis lekérdezése során', details: err.message });
+        console.error("Hiba az adatbázis lekérdezése során:", err);
+        res.status(500).json({ error: 'Hiba az adatbázis lekérdezése során' });
     }
 });
 
 // Egy adott tanár lekérése
 tanar.get("/:id", async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
 
     if (!id || isNaN(id)) {
         return res.status(400).json({ error: "Érvénytelen vagy hiányzó ID" });
     }
 
     try {
-        const [tanar] = await pool.query('SELECT * FROM tanar WHERE tanar_id = ?', [id]);
+        const [tanarok] = await pool.query('SELECT * FROM tanar WHERE tanar_id = ?', [id]);
 
-        if (tanar.length > 0) {
-            res.json(tanar[0]);
-        } else {
-            res.status(404).json({ error: "Tanár nem található" });
-        }
+        tanarok.length > 0 ? res.json(tanarok[0]) : res.status(404).json({ error: "Tanár nem található" });
     } catch (err) {
-        console.error("Hiba az adatbázis lekérdezése során:", err.message);
+        console.error("Hiba az adatbázis lekérdezése során:", err);
         res.status(500).json({ error: 'Hiba az adatbázis lekérdezése során', details: err.message });
     }
 });
@@ -103,12 +108,9 @@ tanar.post("/", async (req, res) => {
         return res.status(400).json({ error: "Érvénytelen email cím" });
     }
 
-    if (password.length < 6) {
-        return res.status(400).json({ error: "A jelszónak legalább 6 karakter hosszúnak kell lennie" });
-    }
-
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
+
         await pool.query(
             'INSERT INTO tanar (t_nev, email, jelszo) VALUES (?, ?, ?)',
             [t_nev, email, hashedPassword]
