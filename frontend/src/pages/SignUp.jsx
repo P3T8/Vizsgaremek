@@ -6,16 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [formData, setFormData] = useState({
-    tanar_id: "", // Tanároknál ez szükséges
-    diak_id: "", // Diákoknál ez szükséges
-    t_nev: "", // Tanárok neve
-    d_nev: "", // Diákok neve
+    t_nev: "",
+    d_nev: "",
     email: "",
     username: "",
     password: "",
     confirmPassword: "",
     termsAccepted: false,
-    isTeacher: false, // Eldönthetjük, hogy tanár vagy diák
+    isTeacher: false,
   });
 
   const [error, setError] = useState("");
@@ -47,15 +45,17 @@ function SignUp() {
     setError("");
 
     try {
-      // Ha tanár regisztrációról van szó
+      let response;
+
       if (formData.isTeacher) {
-        const response = await axios.post("http://localhost:5000/tanar", {
-          tanar_id: formData.tanar_id,
+        response = await axios.post("http://localhost:5000/api/tanar", {
           t_nev: formData.t_nev,
           email: formData.email,
           username: formData.username,
           password: formData.password,
         });
+
+        console.log("Tanár regisztráció válasz:", response.data);
 
         if (response.data.t_nev) {
           alert("Tanár regisztráció sikeres!");
@@ -64,14 +64,14 @@ function SignUp() {
           setError("Hiba történt a tanár regisztrációja során.");
         }
       } else {
-        // Diák regisztráció
-        const response = await axios.post("http://localhost:5000/diak", {
-          diak_id: formData.diak_id,
+        response = await axios.post("http://localhost:5000/api/diak", {
           d_nev: formData.d_nev,
           email: formData.email,
           username: formData.username,
           password: formData.password,
         });
+
+        console.log("Diák regisztráció válasz:", response.data);
 
         if (response.data.d_nev) {
           alert("Diák regisztráció sikeres!");
@@ -81,8 +81,8 @@ function SignUp() {
         }
       }
     } catch (error) {
-      setError("Hiba történt a regisztráció során.");
-      console.error("SignUp failed:", error);
+      setError(error.response?.data?.error || "Hiba történt a regisztráció során.");
+      console.error("SignUp failed:", error.response || error);
     } finally {
       setLoading(false);
     }
@@ -95,44 +95,30 @@ function SignUp() {
 
         {error && <Alert variant="danger">{error}</Alert>}
 
-        {/* Tanár regisztrációs mezők */}
         {formData.isTeacher ? (
           <Form.Group className="mb-3">
-            <Form.Label>Tanár ID:</Form.Label>
+            <Form.Label>Tanár Név:</Form.Label>
             <Form.Control
               type="text"
-              name="tanar_id"
-              value={formData.tanar_id}
+              name="t_nev"
+              value={formData.t_nev}
               onChange={handleChange}
               required
             />
           </Form.Group>
         ) : (
           <Form.Group className="mb-3">
-            <Form.Label>Diák ID:</Form.Label>
+            <Form.Label>Diák Név:</Form.Label>
             <Form.Control
               type="text"
-              name="diak_id"
-              value={formData.diak_id}
+              name="d_nev"
+              value={formData.d_nev}
               onChange={handleChange}
               required
             />
           </Form.Group>
         )}
 
-        {/* Név mező */}
-        <Form.Group className="mb-3">
-          <Form.Label>{formData.isTeacher ? "Tanár Név" : "Diák Név"}:</Form.Label>
-          <Form.Control
-            type="text"
-            name={formData.isTeacher ? "t_nev" : "d_nev"}
-            value={formData.isTeacher ? formData.t_nev : formData.d_nev}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-
-        {/* E-mail mező */}
         <Form.Group className="mb-3">
           <Form.Label>E-mail:</Form.Label>
           <Form.Control
@@ -144,7 +130,6 @@ function SignUp() {
           />
         </Form.Group>
 
-        {/* Felhasználónév mező */}
         <Form.Group className="mb-3">
           <Form.Label>Felhasználónév:</Form.Label>
           <Form.Control
@@ -156,7 +141,6 @@ function SignUp() {
           />
         </Form.Group>
 
-        {/* Jelszó mező */}
         <Form.Group className="mb-3">
           <Form.Label>Jelszó:</Form.Label>
           <Form.Control
@@ -168,7 +152,6 @@ function SignUp() {
           />
         </Form.Group>
 
-        {/* Jelszó megerősítése */}
         <Form.Group className="mb-3">
           <Form.Label>Jelszó újra:</Form.Label>
           <Form.Control
@@ -180,7 +163,6 @@ function SignUp() {
           />
         </Form.Group>
 
-        {/* Felhasználói feltételek elfogadása */}
         <Form.Group className="mb-3">
           <Form.Check
             type="checkbox"
@@ -192,7 +174,6 @@ function SignUp() {
           />
         </Form.Group>
 
-        {/* Regisztrációs gomb */}
         <div className="d-flex justify-content-between">
           <Button type="submit" variant="primary" disabled={loading}>
             {loading ? "Regisztrálás..." : "Regisztráció"}
@@ -202,7 +183,6 @@ function SignUp() {
           </Button>
         </div>
 
-        {/* Választási lehetőség tanár vagy diák között */}
         <Form.Group className="mt-3">
           <Form.Check
             type="radio"

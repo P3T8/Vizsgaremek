@@ -37,25 +37,31 @@ tanar.get("/:tanar_id", async (req, res) => {
 
 // Tanár regisztráció (létrehozása)
 tanar.post("/", async (req, res) => {
-    const { tanar_id, t_nev, email, username, password } = req.body;
+    const { t_nev, email, password } = req.body;
 
-    if (!tanar_id || isNaN(tanar_id) || !t_nev || !email || !username || !password) {
-        return res.status(400).json({ error: "Hiányzó vagy érvénytelen adatok: tanar_id (szám), t_nev, email, username és password szükséges" });
+    if (!t_nev || !email || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: t_nev, email és password szükséges" });
     }
 
     try {
+        const username = t_nev; // Automatikus username t_nev alapján
+
         // Jelszó hash-elése bcrypt-tel
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await pool.query('INSERT INTO tanar (tanar_id, t_nev, email, username, password) VALUES (?, ?, ?, ?, ?)', 
-                         [tanar_id, t_nev, email, username, hashedPassword]);
-        
-        res.status(201).json({ tanar_id, t_nev, email, username });
+        // Feltételezve, hogy az adatbázis auto-incrementálja a tanar_id-t
+        await pool.query(
+            'INSERT INTO tanar (t_nev, email, username, password) VALUES (?, ?, ?, ?)',
+            [t_nev, email, username, hashedPassword]
+        );
+
+        res.status(201).json({ t_nev, email, username });
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });
     }
 });
+
 
 // Tanár módosítása
 tanar.put("/:tanar_id", async (req, res) => {
@@ -99,6 +105,39 @@ tanar.delete("/:tanar_id", async (req, res) => {
     } catch (err) {
         console.error("Hiba az adatbázis törlése során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis törlése során', details: err.message });
+    }
+});
+
+// Bejelentkezés (auth) a tanárok számára
+tanar.post("/login", async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: username és password szükséges" });
+    }
+
+    try {
+        // Keresés a felhasználó adataink alapján
+        const [users] = await pool.query('SELECT * FROM tanar WHERE username = ?', [username]);
+
+        if (users.length > 0) {
+            const user = users[0];
+
+            // Jelszó ellenőrzése bcrypt-tel
+            const isMatch = await bcrypt.compare(password, user.password);
+
+            if (isMatch) {
+                // Sikeres bejelentkezés esetén visszaküldjük a felhasználót (pl. token)
+                res.status(200).json({ message: "Bejelentkezés sikeres!", tanar_id: user.tanar_id, username: user.username });
+            } else {
+                res.status(400).json({ error: "Hibás jelszó" });
+            }
+        } else {
+            res.status(404).json({ error: "Felhasználó nem található" });
+        }
+    } catch (err) {
+        console.error("Bejelentkezési hiba:", err.message);
+        res.status(500).json({ error: 'Bejelentkezési hiba', details: err.message });
     }
 });
 

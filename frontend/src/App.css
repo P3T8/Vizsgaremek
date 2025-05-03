@@ -28,3 +28,7 @@ body.dark-mode .dropdown-menu {
   background-color: #333;
   color: white;
 }
+
+.search-suggestions {
+  z-index: 2000 !important;
+}

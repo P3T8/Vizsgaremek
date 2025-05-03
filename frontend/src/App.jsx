@@ -17,9 +17,18 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Selection from './pages/Selection';
 import About from './pages/About';
-import { BrowserRouter as Router, Route, Routes, useNavigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 
-function AppLayout({ toggleDarkMode, darkMode, handleLoginClick, handleSignUpClick, showModal, setShowModal, isLogin, setIsLogin }) {
+function AppLayout({
+  toggleDarkMode,
+  darkMode,
+  handleLoginClick,
+  handleSignUpClick,
+  showModal,
+  setShowModal,
+  isLogin,
+  setIsLogin
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
@@ -46,7 +55,9 @@ function AppLayout({ toggleDarkMode, darkMode, handleLoginClick, handleSignUpCli
                 {suggestions.map((item) => (
                   <NavDropdown.Item
                     key={item}
-                    as="button"
+                    as="div"
+                    role="button"
+                    tabIndex={0}
                     onClick={() => handleNavigation(item)}
                   >
                     {item}
@@ -64,7 +75,7 @@ function AppLayout({ toggleDarkMode, darkMode, handleLoginClick, handleSignUpCli
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {filteredSuggestions.length > 0 && (
-                <ul className="list-group position-absolute w-100 mt-1 shadow z-index-1000">
+                <ul className="list-group position-absolute w-100 mt-1 shadow search-suggestions">
                   {filteredSuggestions.map((suggestion, index) => (
                     <li
                       key={index}
@@ -83,8 +94,7 @@ function AppLayout({ toggleDarkMode, darkMode, handleLoginClick, handleSignUpCli
             <Button variant="outline-light" className="ms-2" onClick={toggleDarkMode}>
               {darkMode ? <BsSun size={20} /> : <BsMoon size={20} />}
             </Button>
-
-            <Button variant="outline-light" className="ms-auto" onClick={handleLoginClick}>
+            <Button variant="outline-light" className="ms-2" onClick={handleLoginClick}>
               Login
             </Button>
             <Button variant="outline-light" className="ms-2" onClick={handleSignUpClick}>
@@ -131,7 +141,10 @@ function AppLayout({ toggleDarkMode, darkMode, handleLoginClick, handleSignUpCli
           <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="py-3">
-          {isLogin ? <Login /> : <SignUp />}
+          {isLogin
+            ? <Login closeModal={() => setShowModal(false)} />
+            : <SignUp closeModal={() => setShowModal(false)} />
+          }
         </Modal.Body>
       </Modal>
     </>
