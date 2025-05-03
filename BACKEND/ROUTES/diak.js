@@ -1,8 +1,12 @@
 import express from 'express';
 import { pool } from './db.js';
 import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
+import jwt from 'jsonwebtoken'; // JSON Web Token generálása
 
 const diak = express.Router();
+
+// E-mail validálás
+const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
 // Minden diák lekérése
 diak.get("/", async (req, res) => {
@@ -41,10 +45,11 @@ diak.post("/", async (req, res) => {
         return res.status(400).json({ error: "Hiányzó adatok: d_nev, email és password szükséges" });
     }
 
-    try {
-        // A felhasználó e-mail címét használjuk a bejelentkezéshez
-        const username = d_nev; // A felhasználónév itt most a diák neve, de nem szükséges a bejelentkezéshez
+    if (!isValidEmail(email)) {
+        return res.status(400).json({ error: "Érvénytelen email cím" });
+    }
 
+    try {
         // Jelszó hash-elése bcrypt-tel
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -129,8 +134,10 @@ diak.post("/login", async (req, res) => {
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (isMatch) {
-                // Sikeres bejelentkezés esetén visszaküldjük a felhasználót (pl. token)
-                res.status(200).json({ message: "Bejelentkezés sikeres!", diak_id: user.diak_id, email: user.email });
+                // Sikeres bejelentkezés esetén JWT token generálása
+                const token = jwt.sign({ diak_id: user.diak_id, email: user.email }, 'your_jwt_secret_key', { expiresIn: '1h' });
+
+                res.status(200).json({ message: "Bejelentkezés sikeres!", token });
             } else {
                 res.status(400).json({ error: "Hibás jelszó" });
             }
