@@ -15,7 +15,6 @@ app.use(express.json());
 // Route-ek
 
 app.use('/api/diak', diak);
-app.use('/api/diak/login', login);
 app.use('/api/tanar', tanar);
 app.use('/api/tanartantargy', tanartantargy);
 app.use('/api/tantargyak', tantargy);
