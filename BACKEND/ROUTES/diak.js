@@ -123,12 +123,22 @@ diak.post("/login", async (req, res) => {
     }
 
     try {
-        const [users] = await pool.query('SELECT * FROM diak WHERE email = ?', [email]);
+        const trimmedEmail = email.trim();
+        console.log("Bejelentkezési kérés emaillel:", trimmedEmail);
+        const [users] = await pool.query('SELECT * FROM diak WHERE email = ?', [trimmedEmail]);
 
         if (users.length > 0) {
             const user = users[0];
-            console.log("Felhasználó megtalálva:", user);  // Logold a felhasználót, hogy ellenőrizd a jelszó hash-t
+            console.log("Felhasználó adatai:", { diak_id: user.diak_id, email: user.email });
+
+            // Ellenőrizd, hogy a jelszo mező nem üres-e
+            if (!user.jelszo) {
+                console.error("Hiba: A felhasználó jelszó mezője üres az adatbázisban");
+                return res.status(500).json({ error: "Szerveroldali hiba: érvénytelen jelszó tárolás" });
+            }
+
             const isMatch = await bcrypt.compare(password, user.jelszo);
+            console.log("Jelszó egyezés:", isMatch);
 
             if (isMatch) {
                 const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs';
@@ -143,21 +153,23 @@ diak.post("/login", async (req, res) => {
                     token
                 });
             } else {
-                console.log("Hibás jelszó");  // Logold, hogy miért nem sikerült
                 return res.status(401).json({
                     success: false,
-                    error: "Hibás jelszó vagy email"
+                    error: "Hibás jelszó"
                 });
             }
         } else {
-            console.log("Felhasználó nem található");  // Logold, hogy nem találták meg a felhasználót
+            console.log("Felhasználó nem található emaillel:", trimmedEmail);
             return res.status(404).json({
                 success: false,
                 error: "Felhasználó nem található"
             });
         }
     } catch (err) {
-        console.error("Bejelentkezési hiba:", err.message);
+        console.error("Bejelentkezési hiba:", {
+            message: err.message,
+            stack: err.stack
+        });
         return res.status(500).json({
             error: "Bejelentkezési hiba",
             details: err.message

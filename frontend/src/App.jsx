@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
   Container,
   Nav,
@@ -7,47 +7,42 @@ import {
   NavDropdown,
   Form,
   Button,
-  Modal,
   Row,
-  Col
+  Col,
 } from 'react-bootstrap';
-import "bootstrap/dist/css/bootstrap.min.css";
-import { BsSun, BsMoon } from "react-icons/bs";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BsSun, BsMoon } from 'react-icons/bs';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
 import Selection from './pages/Selection';
 import About from './pages/About';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 
-function AppLayout({
-  toggleDarkMode,
-  darkMode,
-  handleLoginClick,
-  handleSignUpClick,
-  showModal,
-  setShowModal,
-  isLogin,
-
-}) {
-  const [searchTerm, setSearchTerm] = useState("");
+// AppLayout komponens
+function AppLayout({ toggleDarkMode, darkMode }) {
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  const suggestions = ["Home", "Selection", "About"];
-  const filteredSuggestions = useMemo(() =>
-    searchTerm ? suggestions.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase())) : [],
-    [searchTerm]
-  );
+  const suggestions = ['Home', 'Selection', 'About'];
 
   const handleNavigation = (page) => {
-    navigate(page === "Home" ? "/" : `/${page.toLowerCase()}`);
-    setSearchTerm("");
+    navigate(page === 'Home' ? '/' : `/${page.toLowerCase()}`);
+    setSearchTerm('');
+  };
+
+  const handleKeyDown = (e, suggestion) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleNavigation(suggestion);
+    }
   };
 
   return (
     <>
       {/* Navbar */}
-      <Navbar expand="lg" style={{ backgroundColor: "navy" }} variant="dark" className="w-100">
+      <Navbar expand="lg" bg="primary" variant="dark" className="w-100">
         <Container fluid>
+          <Navbar.Brand href="/">Teacher Search</Navbar.Brand>
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse id="navbar-nav">
             <Nav className="me-auto">
@@ -55,9 +50,6 @@ function AppLayout({
                 {suggestions.map((item) => (
                   <NavDropdown.Item
                     key={item}
-                    as="div"
-                    role="button"
-                    tabIndex={0}
                     onClick={() => handleNavigation(item)}
                   >
                     {item}
@@ -74,19 +66,23 @@ function AppLayout({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              {filteredSuggestions.length > 0 && (
-                <ul className="list-group position-absolute w-100 mt-1 shadow search-suggestions">
-                  {filteredSuggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      className="list-group-item"
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleNavigation(suggestion)}
-                    >
-                      {suggestion}
-                    </li>
-                  ))}
+              {searchTerm && (
+                <ul className="list-group position-absolute w-100 mt-1 shadow">
+                  {suggestions
+                    .filter((s) => s.toLowerCase().includes(searchTerm.toLowerCase()))
+                    .map((suggestion) => (
+                      <li
+                        key={suggestion}
+                        className="list-group-item list-group-item-action"
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => handleNavigation(suggestion)}
+                        onKeyDown={(e) => handleKeyDown(e, suggestion)}
+                        aria-label={`Navigate to ${suggestion}`}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
                 </ul>
               )}
             </Form>
@@ -94,10 +90,18 @@ function AppLayout({
             <Button variant="outline-light" className="ms-2" onClick={toggleDarkMode}>
               {darkMode ? <BsSun size={20} /> : <BsMoon size={20} />}
             </Button>
-            <Button variant="outline-light" className="ms-2" onClick={handleLoginClick}>
+            <Button
+              variant="outline-light"
+              className="ms-2"
+              onClick={() => navigate('/login')}
+            >
               Login
             </Button>
-            <Button variant="outline-light" className="ms-2" onClick={handleSignUpClick}>
+            <Button
+              variant="outline-light"
+              className="ms-2"
+              onClick={() => navigate('/signup')}
+            >
               Sign Up
             </Button>
           </Navbar.Collapse>
@@ -108,76 +112,65 @@ function AppLayout({
       <main className="flex-grow-1 w-100 d-flex justify-content-center align-items-center">
         <Container fluid>
           <Routes>
-            <Route path="/" element={
-              <Row className="px-4 my-5 justify-content-center">
-                <Col sm="8" className="text-center">
-                  <h1 className="font-weight-light">Home</h1>
-                  <p className="mt-4">Welcome to our homepage!</p>
-                </Col>
-              </Row>
-            } />
+            <Route
+              path="/"
+              element={
+                <Row className="px-4 my-5 justify-content-center">
+                  <Col sm={8} className="text-center">
+                    <h1 className="fw-light">Home</h1>
+                    <p className="mt-4">Welcome to our homepage!</p>
+                  </Col>
+                </Row>
+              }
+            />
             <Route path="/selection" element={<Selection />} />
             <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </Container>
       </main>
 
       {/* Lábléc */}
-      <footer className="py-4 mt-auto w-100" style={{ backgroundColor: "navy", color: "white" }}>
+      <footer className="py-4 mt-auto w-100 bg-primary text-white">
         <Container fluid>
           <p className="text-center">
-            <a href="https://github.com/P3T8/Vizsgaremek.git" target="_blank" rel="noopener noreferrer">
-              <img src="https://github.com/P3T8.png" alt="GitHub Profile" width="60" height="60" className="rounded-circle" />
+            <a
+              href="https://github.com/P3T8"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub Profile"
+            >
+              <img
+                src="https://github.com/P3T8.png?size=60"
+                alt="GitHub Profile"
+                width="60"
+                height="60"
+                className="rounded-circle"
+              />
             </a>
             <br />
-            &copy; 2025 Our Website for teacher searching!
+            © 2025 Teacher Search Platform
           </p>
         </Container>
       </footer>
-
-      {/* Login / SignUp modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{isLogin ? "Bejelentkezés" : "Regisztráció"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="py-3">
-          {isLogin
-            ? <Login closeModal={() => setShowModal(false)} />
-            : <SignUp closeModal={() => setShowModal(false)} />
-          }
-        </Modal.Body>
-      </Modal>
     </>
   );
 }
 
+// App komponens
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
 
-  const handleLoginClick = () => {
-    setIsLogin(true);
-    setShowModal(true);
-  };
-
-  const handleSignUpClick = () => {
-    setIsLogin(false);
-    setShowModal(true);
-  };
+  // Bootstrap sötét mód alkalmazása
+  document.documentElement.setAttribute('data-bs-theme', darkMode ? 'dark' : 'light');
 
   return (
-    <div className={`d-flex flex-column min-vh-100 w-100 ${darkMode ? "bg-dark text-white" : "bg-light text-dark"}`}>
+    <div className="d-flex flex-column min-vh-100 w-100">
       <Router>
         <AppLayout
           toggleDarkMode={() => setDarkMode(!darkMode)}
           darkMode={darkMode}
-          handleLoginClick={handleLoginClick}
-          handleSignUpClick={handleSignUpClick}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          isLogin={isLogin}
-          setIsLogin={setIsLogin}
         />
       </Router>
     </div>
