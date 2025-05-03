@@ -18,22 +18,32 @@ import SignUp from './pages/SignUp';
 import Selection from './pages/Selection';
 import About from './pages/About';
 
-// AppLayout komponens
 function AppLayout({ toggleDarkMode, darkMode }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  const suggestions = ['Home', 'Selection', 'About'];
+  // Tantárgyak listája
+  const subjects = [
+    'Matematika',
+    'Fizika',
+    'Kémia',
+    'Biológia',
+    'Történelem',
+    'Irodalom',
+    'Angol',
+    'Informatika'
+  ];
 
-  const handleNavigation = (page) => {
-    navigate(page === 'Home' ? '/' : `/${page.toLowerCase()}`);
+  const handleNavigation = (subject) => {
+    // Navigálás a Selection oldalra a tantárgy paraméterrel
+    navigate(`/selection?subject=${encodeURIComponent(subject)}`);
     setSearchTerm('');
   };
 
-  const handleKeyDown = (e, suggestion) => {
+  const handleKeyDown = (e, subject) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      handleNavigation(suggestion);
+      handleNavigation(subject);
     }
   };
 
@@ -47,40 +57,41 @@ function AppLayout({ toggleDarkMode, darkMode }) {
           <Navbar.Collapse id="navbar-nav">
             <Nav className="me-auto">
               <NavDropdown title="Menu" id="basic-nav-dropdown">
-                {suggestions.map((item) => (
-                  <NavDropdown.Item
-                    key={item}
-                    onClick={() => handleNavigation(item)}
-                  >
-                    {item}
-                  </NavDropdown.Item>
-                ))}
+                <NavDropdown.Item onClick={() => navigate('/')}>
+                  Home
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => navigate('/selection')}>
+                  Selection
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => navigate('/about')}>
+                  About
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
 
             <Form className="position-relative mx-auto w-50">
               <Form.Control
                 type="search"
-                placeholder="Search"
-                aria-label="Search"
+                placeholder="Keresés tantárgy szerint..."
+                aria-label="Search by subject"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm && (
                 <ul className="list-group position-absolute w-100 mt-1 shadow">
-                  {suggestions
+                  {subjects
                     .filter((s) => s.toLowerCase().includes(searchTerm.toLowerCase()))
-                    .map((suggestion) => (
+                    .map((subject) => (
                       <li
-                        key={suggestion}
+                        key={subject}
                         className="list-group-item list-group-item-action"
                         role="option"
                         tabIndex={0}
-                        onClick={() => handleNavigation(suggestion)}
-                        onKeyDown={(e) => handleKeyDown(e, suggestion)}
-                        aria-label={`Navigate to ${suggestion}`}
+                        onClick={() => handleNavigation(subject)}
+                        onKeyDown={(e) => handleKeyDown(e, subject)}
+                        aria-label={`Search for ${subject} teachers`}
                       >
-                        {suggestion}
+                        {subject}
                       </li>
                     ))}
                 </ul>
@@ -157,7 +168,6 @@ function AppLayout({ toggleDarkMode, darkMode }) {
     </>
   );
 }
-
 // App komponens
 function App() {
   const [darkMode, setDarkMode] = useState(false);
