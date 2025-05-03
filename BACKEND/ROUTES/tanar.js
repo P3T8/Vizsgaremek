@@ -44,24 +44,21 @@ tanar.post("/", async (req, res) => {
     }
 
     try {
-        const username = t_nev; // Automatikus username t_nev alapján
-
         // Jelszó hash-elése bcrypt-tel
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Feltételezve, hogy az adatbázis auto-incrementálja a tanar_id-t
         await pool.query(
-            'INSERT INTO tanar (t_nev, email, username, password) VALUES (?, ?, ?, ?)',
-            [t_nev, email, username, hashedPassword]
+            'INSERT INTO tanar (t_nev, email, password) VALUES (?, ?, ?)',
+            [t_nev, email, hashedPassword]
         );
 
-        res.status(201).json({ t_nev, email, username });
+        res.status(201).json({ t_nev, email });
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });
     }
 });
-
 
 // Tanár módosítása
 tanar.put("/:tanar_id", async (req, res) => {
@@ -110,15 +107,15 @@ tanar.delete("/:tanar_id", async (req, res) => {
 
 // Bejelentkezés (auth) a tanárok számára
 tanar.post("/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: "Hiányzó adatok: username és password szükséges" });
+    if (!email || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: email és password szükséges" });
     }
 
     try {
-        // Keresés a felhasználó adataink alapján
-        const [users] = await pool.query('SELECT * FROM tanar WHERE username = ?', [username]);
+        // Keresés a felhasználó adataink alapján (email)
+        const [users] = await pool.query('SELECT * FROM tanar WHERE email = ?', [email]);
 
         if (users.length > 0) {
             const user = users[0];
@@ -128,7 +125,7 @@ tanar.post("/login", async (req, res) => {
 
             if (isMatch) {
                 // Sikeres bejelentkezés esetén visszaküldjük a felhasználót (pl. token)
-                res.status(200).json({ message: "Bejelentkezés sikeres!", tanar_id: user.tanar_id, username: user.username });
+                res.status(200).json({ message: "Bejelentkezés sikeres!", tanar_id: user.tanar_id, email: user.email });
             } else {
                 res.status(400).json({ error: "Hibás jelszó" });
             }

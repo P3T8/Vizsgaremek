@@ -42,24 +42,24 @@ diak.post("/", async (req, res) => {
     }
 
     try {
-        const username = d_nev; // Automatikus username d_nev alapján
+        // A felhasználó e-mail címét használjuk a bejelentkezéshez
+        const username = d_nev; // A felhasználónév itt most a diák neve, de nem szükséges a bejelentkezéshez
 
         // Jelszó hash-elése bcrypt-tel
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Feltételezve, hogy az adatbázis auto-incrementálja az ID-t
         await pool.query(
-            'INSERT INTO diak (d_nev, email, username, password) VALUES (?, ?, ?, ?)', 
-            [d_nev, email, username, hashedPassword]
+            'INSERT INTO diak (d_nev, email, password) VALUES (?, ?, ?)', 
+            [d_nev, email, hashedPassword]
         );
 
-        res.status(201).json({ d_nev, email, username }); // Az új regisztráció visszaadása
+        res.status(201).json({ d_nev, email }); // Az új regisztráció visszaadása
     } catch (err) {
         console.error("Hiba az adatbázis beszúrása során:", err.message);
         res.status(500).json({ error: 'Hiba az adatbázis beszúrása során', details: err.message });
     }
 });
-
 
 // Diák módosítása
 diak.put("/:diak_id", async (req, res) => {
@@ -110,17 +110,17 @@ diak.delete("/:diak_id", async (req, res) => {
     }
 });
 
-// Bejelentkezés (auth)
+// Bejelentkezés (auth) - email és jelszó alapján
 diak.post("/login", async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ error: "Hiányzó adatok: username és password szükséges" });
+    if (!email || !password) {
+        return res.status(400).json({ error: "Hiányzó adatok: email és password szükséges" });
     }
 
     try {
-        // Keresés a felhasználó adataink alapján
-        const [users] = await pool.query('SELECT * FROM diak WHERE username = ?', [username]);
+        // Keresés a felhasználó e-mail címe alapján
+        const [users] = await pool.query('SELECT * FROM diak WHERE email = ?', [email]);
 
         if (users.length > 0) {
             const user = users[0];
@@ -130,7 +130,7 @@ diak.post("/login", async (req, res) => {
 
             if (isMatch) {
                 // Sikeres bejelentkezés esetén visszaküldjük a felhasználót (pl. token)
-                res.status(200).json({ message: "Bejelentkezés sikeres!", diak_id: user.diak_id, username: user.username });
+                res.status(200).json({ message: "Bejelentkezés sikeres!", diak_id: user.diak_id, email: user.email });
             } else {
                 res.status(400).json({ error: "Hibás jelszó" });
             }

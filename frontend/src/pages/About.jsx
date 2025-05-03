@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import ballMirage from "../img/Ball-Mirage.png";

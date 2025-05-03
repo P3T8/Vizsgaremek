@@ -9,7 +9,6 @@ function SignUp() {
     t_nev: "",
     d_nev: "",
     email: "",
-    username: "",
     password: "",
     confirmPassword: "",
     termsAccepted: false,
@@ -51,11 +50,8 @@ function SignUp() {
         response = await axios.post("http://localhost:5000/api/tanar", {
           t_nev: formData.t_nev,
           email: formData.email,
-          username: formData.username,
           password: formData.password,
         });
-
-        console.log("Tanár regisztráció válasz:", response.data);
 
         if (response.data.t_nev) {
           alert("Tanár regisztráció sikeres!");
@@ -67,11 +63,8 @@ function SignUp() {
         response = await axios.post("http://localhost:5000/api/diak", {
           d_nev: formData.d_nev,
           email: formData.email,
-          username: formData.username,
           password: formData.password,
         });
-
-        console.log("Diák regisztráció válasz:", response.data);
 
         if (response.data.d_nev) {
           alert("Diák regisztráció sikeres!");
@@ -81,7 +74,8 @@ function SignUp() {
         }
       }
     } catch (error) {
-      setError(error.response?.data?.error || "Hiba történt a regisztráció során.");
+      const errMessage = error.response?.data?.error || "Hiba történt a regisztráció során.";
+      setError(errMessage);
       console.error("SignUp failed:", error.response || error);
     } finally {
       setLoading(false);
@@ -125,17 +119,6 @@ function SignUp() {
             type="email"
             name="email"
             value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label>Felhasználónév:</Form.Label>
-          <Form.Control
-            type="text"
-            name="username"
-            value={formData.username}
             onChange={handleChange}
             required
           />
