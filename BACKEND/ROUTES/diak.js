@@ -3,7 +3,6 @@ import { pool } from './db.js';
 import bcrypt from 'bcryptjs'; // Jelszó hash-eléséhez
 import jwt from 'jsonwebtoken'; // JSON Web Token generálása
 
-
 const diak = express.Router();
 
 // E-mail validálás
@@ -117,7 +116,6 @@ diak.delete("/:diak_id", async (req, res) => {
 });
 
 // Bejelentkezés (auth) - email és jelszó alapján
-// Bejelentkezés (auth) - email és jelszó alapján
 diak.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -140,11 +138,11 @@ diak.post("/login", async (req, res) => {
                 );
                 return res.status(200).json({ success: true, message: "Bejelentkezés sikeres!", token });
             } else {
-                // Hibás jelszó kezelése
-                return res.status(401).json({ success: false, error: "Hibás jelszó" });
+                // Hibás jelszó kezelése (biztonságosabb hibaüzenet)
+                return res.status(401).json({ success: false, error: "Hibás jelszó vagy email" });
             }
         } else {
-            // Felhasználó nem található
+            // Felhasználó nem található (biztonságosabb hibaüzenet)
             return res.status(404).json({ success: false, error: "Felhasználó nem található" });
         }
     } catch (err) {
@@ -152,6 +150,5 @@ diak.post("/login", async (req, res) => {
         return res.status(500).json({ error: "Bejelentkezési hiba", details: err.message });
     }
 });
-
 
 export default diak;

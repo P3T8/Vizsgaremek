@@ -29,12 +29,16 @@ function Login({ closeModal }) {
       setSuccessMessage('Bejelentkezés sikeres!'); // Sikeres bejelentkezési üzenet
       setError('');  // Töröljük a hibát, ha sikeres a bejelentkezés
       localStorage.setItem('token', res.data.token);  // Mentjük a token-t a localStorage-ba
-      closeModal(); // Bezárja a modalt
+      if (closeModal && typeof closeModal === 'function') {
+        closeModal(); // Bezárja a modalt, ha a closeModal függvény létezik
+      }
     } catch (err) {
       console.error('Bejelentkezési hiba:', err);
+      // Hibakezelés javítása: ellenőrizzük, hogy a válasz rendelkezik-e response objektummal
       if (err.response) {
         // Ha van válasz, de hiba történt
-        setError(err.response?.data?.error || 'Hiba a bejelentkezés során');
+        const errorMessage = err.response?.data?.error || err.response?.data?.message || 'Hiba a bejelentkezés során';
+        setError(errorMessage);  // Az új hibaüzenet beállítása
       } else {
         // Ha nincs válasz, akkor hálózati hiba
         setError('Hálózati hiba történt. Kérjük, próbáld meg újra!');
