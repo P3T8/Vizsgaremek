@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Alert, Spinner } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -15,10 +14,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -44,33 +40,22 @@ function Login() {
     }
 
     try {
-      // Tanár esetén "jelszo" kulcsot küldünk, diák esetén "password"
       const requestBody =
-        userType === "tanar"
-          ? { email, jelszo: password }
-          : { email, password };
+        userType === "tanar" ? { email, jelszo: password } : { email, password };
 
-      const response = await axios.post(
-        endpoint,
-        requestBody,
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      console.log("Szerver válasza:", response.data);
+      const response = await axios.post(endpoint, requestBody, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userEmail", email);
         navigate("/dashboard");
       } else {
         setError("Bejelentkezés sikertelen. Token nem található.");
       }
     } catch (err) {
-      console.error("Hiba a bejelentkezés során:", {
-        status: err.response?.status,
-        message: err.response?.data?.error,
-        endpoint,
-      });
-      setError(err.response?.data?.error || "Váratlan hiba történt a bejelentkezés során.");
+      setError(err.response?.data?.error || "Váratlan hiba történt.");
     } finally {
       setLoading(false);
     }
@@ -94,7 +79,6 @@ function Login() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="pelda@email.com"
             required
           />
         </Form.Group>
@@ -106,7 +90,6 @@ function Login() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Jelszavad"
             required
           />
         </Form.Group>
@@ -135,22 +118,10 @@ function Login() {
           </div>
         </Form.Group>
 
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={loading}
-          className="w-100"
-        >
+        <Button type="submit" variant="primary" className="w-100" disabled={loading}>
           {loading ? (
             <>
-              <Spinner
-                as="span"
-                animation="border"
-                size="sm"
-                role="status"
-                aria-hidden="true"
-                className="me-2"
-              />
+              <Spinner as="span" animation="border" size="sm" className="me-2" />
               Bejelentkezés...
             </>
           ) : (
