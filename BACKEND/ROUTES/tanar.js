@@ -10,32 +10,38 @@ const isValidEmail = (email) => validator.isEmail(email);
 
 // Bejelentkezés (auth)
 tanar.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    console.log("Tanár bejelentkezési kísérlet:", { email });
+    const { email, jelszo } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: "Hiányzó adatok: email és password szükséges" });
+console.log("Bejelentkezési kísérlet:", { email, jelszo: jelszo });
+    if (!email || !jelszo) {
+        return res.status(400).json({ error: "Hiányzó adatok: email és jelszo szükséges" });
     }
 
     try {
         const trimmedEmail = email.trim();
+        console.log("Bejelentkezési kérés emaillel:", trimmedEmail);
         const [users] = await pool.query('SELECT * FROM tanar WHERE email = ?', [trimmedEmail]);
 
         if (users.length > 0) {
             const user = users[0];
+            console.log("Felhasználó adatai:", { tanar_id: user.tanar_id, email: user.email });
 
+            // Ellenőrizd, hogy a jelszo mező nem üres-e
             if (!user.jelszo) {
                 console.error("Hiba: A felhasználó jelszó mezője üres az adatbázisban");
                 return res.status(500).json({ error: "Szerveroldali hiba: érvénytelen jelszó tárolás" });
             }
 
-            const isMatch = await bcrypt.compare(password, user.jelszo);
+            //const isMatch = await bcrypt.compare(jelszo, user.jelszo);
+            const isMatch = jelszo == user.jelszo;
+
+            console.log("Jelszó egyezés:", isMatch);
 
             if (isMatch) {
                 const JWT_SECRET = process.env.JWT_SECRET || 'valamiTitkosKulcs';
                 const token = jwt.sign(
                     { tanar_id: user.tanar_id, email: user.email },
-                    JWT_SECRET,
+                    JWT_SECRET, 
                     { expiresIn: '1h' }
                 );
                 return res.status(200).json({
@@ -50,6 +56,7 @@ tanar.post("/login", async (req, res) => {
                 });
             }
         } else {
+            console.log("Felhasználó nem található emaillel:", trimmedEmail);
             return res.status(404).json({
                 success: false,
                 error: "Felhasználó nem található"
@@ -66,6 +73,7 @@ tanar.post("/login", async (req, res) => {
         });
     }
 });
+  
 
 // Minden tanár lekérése
 tanar.get("/", async (req, res) => {
@@ -98,10 +106,10 @@ tanar.get("/:id", async (req, res) => {
 
 // Tanár létrehozása (regisztráció)
 tanar.post("/", async (req, res) => {
-    const { t_nev, email, password } = req.body;
+    const { t_nev, email, jelszo } = req.body;
 
-    if (!t_nev || !email || !password) {
-        return res.status(400).json({ error: "Hiányzó adatok: t_nev, email és password szükséges" });
+    if (!t_nev || !email || !jelszo) {
+        return res.status(400).json({ error: "Hiányzó adatok: t_nev, email és jelszo szükséges" });
     }
 
     if (!isValidEmail(email)) {
@@ -109,11 +117,11 @@ tanar.post("/", async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedjelszo = await bcrypt.hash(jelszo, 10);
 
         await pool.query(
             'INSERT INTO tanar (t_nev, email, jelszo) VALUES (?, ?, ?)',
-            [t_nev, email, hashedPassword]
+            [t_nev, email, hashedjelszo]
         );
 
         res.status(201).json({ t_nev, email });
